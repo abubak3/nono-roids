@@ -1,0 +1,25 @@
+{
+  "name": "nono-roids",
+  "version": "1.0.0",
+  "description": "CSE 264 Final Project\r Due May 7 2024",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abubak3/nono-roids.git"
+  },
+  "author": "Aspen Bubak and Henrik Hovstadius",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/abubak3/nono-roids/issues"
+  },
+  "homepage": "https://github.com/abubak3/nono-roids#readme",
+  "dependencies": {
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.3"
+  }
+}
