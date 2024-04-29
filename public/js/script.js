@@ -9,32 +9,41 @@ const ctx = canvas.getContext("2d");
 
 // CURRENT
 
+
+
+// HARD CODED GRIDS
 // Inner Grid
-let inner = [
-  2, 1, 1, 1, 2, 2, 2, 2, 2, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 2, 2, 1, 1, 1, 1,
-]; // 1D array
+let innerEasy = [2, 1, 1, 1, 2, 2, 2, 2, 2, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 2, 2, 1, 1, 1, 1]; // 1D array
 
 // Clues
-let rowClue = [
-  [0, 0, 3],
-  [0, 0, 1],
-  [0, 1, 2],
-  [0, 1, 2],
-  [0, 0, 4],
-];
+let rowClueEasy = [[0, 0, 3], [0, 0, 1], [0, 1, 2], [0, 1, 2], [0, 0, 4]];
 
-let colClue = [
-  [0, 0, 1],
-  [1, 1, 1],
-  [0, 1, 2],
-  [0, 1, 3],
-  [0, 2, 1],
-];
+let colClueEasy = [[0, 0, 1], [1, 1, 1], [0, 1, 2], [0, 1, 3], [0, 2, 1]];
 
-let clue = {
-  rows: rowClue, // [5 sub arrays [3 indexes max]]
-  cols: colClue,
+let clueEasy = {
+  rows: rowClueEasy, // [5 sub arrays [3 indexes max]]
+  cols: colClueEasy
 };
+
+let innerHard = [];
+let rowClueHard = [[0, 4, 1], [0, 4, 2], [1, 1, 2], [0, 3, 4], [0, 4, 3], [0, 6, 2], [0, 1, 7], [0, 2, 4], [0, 1, 5], [2, 3, 1]];
+
+let colClueHard = [[1, 3, 1], [0, 1, 7], [0, 6, 1], [0, 2, 3], [1, 3, 1], [1, 1, 5], [0, 1, 4], [0, 2, 6], [0, 6, 1], [3, 1, 2]];
+
+let clueHard = {
+  rows: rowClueHard,
+  cols: colClueHard
+};
+
+let innerMedium = [];
+let rowClueMedium = [[0, 1, 1], [0, 3, 1], [0, 2, 1], [0, 1, 2], [0, 3, 1], [0, 1, 3], [0, 0, 5]];
+let colClueMedium = [[2, 1, 1], [0, 4, 1], [0, 1, 3], [0, 1, 1], [0, 2, 2], [1, 1, 1], [0, 1, 2]];
+
+let clueMedium = {
+  rows: rowClueMedium,
+  cols: colClueMedium
+}
+
 
 // let grid = {
 //   solution: inner,
@@ -58,21 +67,20 @@ class Grid {
     for (let i = 0; i < this.size; i++) {
       for (let j = 0; j < 3; j++) {
         console.log(this.clues.cols);
-        ctx.fillText(this.clues.cols[i][j], i * 30 + 100, j * 30 + 10);
+        if (this.clues.cols[i][j] !== 0)  // Check if value is not 0
+          ctx.fillText(this.clues.cols[i][j], i * 30 + 100, j * 30 + 10);
       }
     }
 
     // draw rowClues
     for (let i = 0; i < this.size; i++) {
       for (let j = 0; j < 3; j++) {
-        ctx.fillText(this.clues.rows[i][j], j * 30 + 10, i * 30 + 100);
+        if (this.clues.rows[i][j] !== 0)  // Check if value is not 0
+          ctx.fillText(this.clues.rows[i][j], j * 30 + 10, i * 30 + 100);
       }
     }
-    // draw playGrid
   }
 }
-
-
 
 $(() => {
   // Extract difficulty level from URL
@@ -83,14 +91,18 @@ $(() => {
   switch (difficulty) {
     case 'easy':
       drawEasy();
-      let grid = new Grid(inner, clue, 5);
-      grid.drawClues();
+      let gridEasy = new Grid(innerEasy, clueEasy, 5);
+      gridEasy.drawClues();
       break;
     case 'medium':
       drawMedium();
+      let gridMedium = new Grid(innerMedium, clueMedium, 7);
+      gridMedium.drawClues();
       break;
     case 'hard':
       drawHard();
+      let gridHard = new Grid(innerHard, clueHard, 10);
+      gridHard.drawClues();
       break;
     default:
       // Handle invalid difficulty level or default to easy
