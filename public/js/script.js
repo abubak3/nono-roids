@@ -72,12 +72,31 @@ class Grid {
   }
 }
 
-$(() => {
-  drawEasy();
-  let grid = new Grid(inner, clue, 5);
-  grid.drawClues();
-});
 
+
+$(() => {
+  // Extract difficulty level from URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const difficulty = urlParams.get('difficulty');
+
+  // Call the appropriate drawing function based on difficulty level
+  switch (difficulty) {
+    case 'easy':
+      drawEasy();
+      let grid = new Grid(inner, clue, 5);
+      grid.drawClues();
+      break;
+    case 'medium':
+      drawMedium();
+      break;
+    case 'hard':
+      drawHard();
+      break;
+    default:
+      // Handle invalid difficulty level or default to easy
+      drawEasy();
+  }
+});
 function drawEasy() {
   // Draw Lines
   ctx.beginPath();
