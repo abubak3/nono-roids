@@ -9,8 +9,6 @@ const ctx = canvas.getContext("2d");
 
 // CURRENT
 
-
-
 // HARD CODED GRIDS
 // Inner Grid
 let innerEasy = [2, 1, 1, 1, 2, 2, 2, 2, 2, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 2, 2, 1, 1, 1, 1]; // 1D array
@@ -63,20 +61,42 @@ class Grid {
     ctx.font = "18px Arial";
     ctx.textAlign = "left";
     ctx.textBaseline = "top";
+  
+    let startX, startY;
+  
+    switch (this.size) {
+      case 5: // Easy
+        startX = 380;
+        startY = 180;
+        break;
+      case 7: // Medium
+        startX = 350;
+        startY = 150;
+        break;
+      case 10: // Hard
+        startX = 305;
+        startY = 105;
+        break;
+      default:
+        startX = 0;
+        startY = 0;
+    }
+  
     // draw colClues
     for (let i = 0; i < this.size; i++) {
       for (let j = 0; j < 3; j++) {
-        console.log(this.clues.cols);
-        if (this.clues.cols[i][j] !== 0)  // Check if value is not 0
-          ctx.fillText(this.clues.cols[i][j], i * 30 + 100, j * 30 + 10);
+        const x = (i * 30) + startX;
+        const y = (j * 30) + startY;
+        ctx.fillText(this.clues.cols[i][j], x, y);
       }
     }
-
+  
     // draw rowClues
     for (let i = 0; i < this.size; i++) {
       for (let j = 0; j < 3; j++) {
-        if (this.clues.rows[i][j] !== 0)  // Check if value is not 0
-          ctx.fillText(this.clues.rows[i][j], j * 30 + 10, i * 30 + 100);
+        const x = (j * 30) + startX;
+        const y = (i * 30) + startY + 90; // Adjust y-coordinate for row clues
+        ctx.fillText(this.clues.rows[i][j], x, y);
       }
     }
   }
@@ -109,91 +129,96 @@ $(() => {
       drawEasy();
   }
 });
-function drawEasy() {
-  // Draw Lines
-  ctx.beginPath();
-  ctx.moveTo(0, 0);
 
-  // outside lines
-  ctx.lineTo(240, 0);
-  ctx.lineTo(240, 240);
-  ctx.lineTo(0, 240);
-  ctx.lineTo(0, 0);
 
-  ctx.moveTo(0, 90);
-  ctx.lineTo(240, 90);
-  ctx.moveTo(90, 0);
-  ctx.lineTo(90, 240);
+    // for easy we need to start at (380,180)
+    // for medium we need to start at (350, 150)
+    // for hard we need to start at (305, 105)
+    function drawEasy() {
+      // Draw Lines
+      ctx.beginPath();
+      ctx.moveTo(380, 180);
+    
+      // outside lines
+      ctx.lineTo(620, 180); // x: 380 + 240, y: 180
+      ctx.lineTo(620, 420); // x: 380 + 240, y: 180 + 240
+      ctx.lineTo(380, 420); // x: 380, y: 180 + 240
+      ctx.lineTo(380, 180); // x: 380, y: 180
+    
+      ctx.moveTo(380, 270); // x: 380, y: 180 + 90
+      ctx.lineTo(620, 270); // x: 380 + 240, y: 180 + 90
+      ctx.moveTo(470, 180); // x: 380 + 90, y: 180
+      ctx.lineTo(470, 420); // x: 380 + 90, y: 180 + 240
+    
+      for (let x = 470; x < 620; x += 30) { // x: 380 + 90, end at 380 + 240
+        ctx.moveTo(x, 270); // y: 180 + 90
+        ctx.lineTo(x, 420); // y: 180 + 240
+      }
+    
+      for (let y = 270; y < 420; y += 30) { // y: 180 + 90, end at 180 + 240
+        ctx.moveTo(470, y); // x: 380 + 90
+        ctx.lineTo(620, y); // x: 380 + 240
+      }
+    
+      ctx.stroke();
+    }
+    function drawMedium() {
+      // Draw Lines
+      ctx.beginPath();
+      ctx.moveTo(350, 150);
+    
+      // outside lines
+      ctx.lineTo(650, 150); // x: 350 + 300, y: 150
+      ctx.lineTo(650, 450); // x: 350 + 300, y: 150 + 300
+      ctx.lineTo(350, 450); // x: 350, y: 150 + 300
+      ctx.lineTo(350, 150); // x: 350, y: 150
+    
+      ctx.moveTo(350, 240); // x: 350, y: 150 + 90
+      ctx.lineTo(650, 240); // x: 350 + 300, y: 150 + 90
+      ctx.moveTo(440, 150); // x: 350 + 90, y: 150
+      ctx.lineTo(440, 450); // x: 350 + 90, y: 150 + 300
+    
+      for (let x = 440; x < 650; x += 30) { // x: 350 + 90, end at 350 + 300
+        ctx.moveTo(x, 240); // y: 150 + 90
+        ctx.lineTo(x, 450); // y: 150 + 300
+      }
+    
+      for (let y = 240; y < 450; y += 30) { // y: 150 + 90, end at 150 + 300
+        ctx.moveTo(440, y); // x: 350 + 90
+        ctx.lineTo(650, y); // x: 350 + 300
+      }
+    
+      ctx.stroke();
+    }
 
-  for (let x = 90; x < 240; x += 30) {
-    ctx.moveTo(x, 90);
-    ctx.lineTo(x, 240);
-  }
-
-  for (let y = 90; y < 240; y += 30) {
-    ctx.moveTo(90, y);
-    ctx.lineTo(240, y);
-  }
-
-  ctx.stroke();
-}
-
-function drawMedium() {
-  // Draw Lines
-  ctx.beginPath();
-  ctx.moveTo(0, 0);
-
-  // outside lines
-  ctx.lineTo(300, 0);
-  ctx.lineTo(300, 300);
-  ctx.lineTo(0, 300);
-  ctx.lineTo(0, 0);
-
-  ctx.moveTo(0, 90);
-  ctx.lineTo(300, 90);
-  ctx.moveTo(90, 0);
-  ctx.lineTo(90, 300);
-
-  for (let x = 90; x < 300; x += 30) {
-    ctx.moveTo(x, 90);
-    ctx.lineTo(x, 300);
-  }
-
-  for (let y = 90; y < 300; y += 30) {
-    ctx.moveTo(90, y);
-    ctx.lineTo(300, y);
-  }
-
-  ctx.stroke();
-}
-
-function drawHard() {
-  // Draw Lines
-  ctx.beginPath();
-  ctx.moveTo(0, 0);
-
-  // outside lines
-  ctx.lineTo(390, 0);
-  ctx.lineTo(390, 390);
-  ctx.lineTo(0, 390);
-  ctx.lineTo(0, 0);
-
-  ctx.moveTo(0, 90);
-  ctx.lineTo(390, 90);
-  ctx.moveTo(90, 0);
-  ctx.lineTo(90, 390);
-
-  for (let x = 90; x < 390; x += 30) {
-    ctx.moveTo(x, 90);
-    ctx.lineTo(x, 390);
-  }
-
-  for (let y = 90; y < 390; y += 30) {
-    ctx.moveTo(90, y);
-    ctx.lineTo(390, y);
-  }
-  ctx.stroke();
-}
+    function drawHard() {
+      // Draw Lines
+      ctx.beginPath();
+      ctx.moveTo(305, 105);
+    
+      // outside lines
+      ctx.lineTo(695, 105); // x: 305 + 390, y: 105
+      ctx.lineTo(695, 495); // x: 305 + 390, y: 105 + 390
+      ctx.lineTo(305, 495); // x: 305, y: 105 + 390
+      ctx.lineTo(305, 105); // x: 305, y: 105
+    
+      ctx.moveTo(305, 195); // x: 305, y: 105 + 90
+      ctx.lineTo(695, 195); // x: 305 + 390, y: 105 + 90
+      ctx.moveTo(395, 105); // x: 305 + 90, y: 105
+      ctx.lineTo(395, 495); // x: 305 + 90, y: 105 + 390
+    
+      for (let x = 395; x < 695; x += 30) { // x: 305 + 90, end at 305 + 390
+        ctx.moveTo(x, 195); // y: 105 + 90
+        ctx.lineTo(x, 495); // y: 105 + 390
+      }
+    
+      for (let y = 195; y < 495; y += 30) { // y: 105 + 90, end at 105 + 390
+        ctx.moveTo(395, y); // x: 305 + 90
+        ctx.lineTo(695, y); // x: 305 + 390
+      }
+    
+      ctx.stroke();
+    }
 
 $("#gameCanvas").leftClick((e) => {
   x = e.clientX;
