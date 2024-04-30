@@ -79,18 +79,22 @@ class Grid {
         // draw colClues
         for (let i = 0; i < this.size; i++) {
             for (let j = 0; j < 3; j++) {
+              if (this.clues.cols[i][j] !== 0) {
                 const x = (i * 30) + startX + 100;
                 const y = (j * 30) + startY + 5;
                 ctx.fillText(this.clues.cols[i][j], x, y);
+              }
             }
         }
 
         // draw rowClues
         for (let i = 0; i < this.size; i++) {
             for (let j = 0; j < 3; j++) {
+              if (this.clues.rows[i][j] !== 0) {
                 const x = (j * 30) + startX + 10;
                 const y = (i * 30) + startY + 97; // Adjust y-coordinate for row clues
                 ctx.fillText(this.clues.rows[i][j], x, y);
+              }
             }
         }
     }
