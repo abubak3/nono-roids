@@ -315,13 +315,25 @@ $("#gameCanvas").mousedown((e) => {
         let selectedCol = Math.floor((x - startGridX) / 30);
         let selectedRow = Math.floor((y - startGridY) / 30);
         if (e.which == 1) { // left click - set block to white
-            console.log('left click in grid');
-            currentGrid[(selectedCol % size) + (selectedRow * size)] = 1;
-            drawSquare(selectedRow, selectedCol, 'white');
+            if (currentGrid[(selectedCol % size) + (selectedRow * size)] == 1) {
+                currentGrid[(selectedCol % size) + (selectedRow * size)] = 0;
+                drawSquare(selectedRow, selectedCol, 'black');
+            } else {
+                currentGrid[(selectedCol % size) + (selectedRow * size)] = 1;
+                drawSquare(selectedRow, selectedCol, 'white');
+            }
         } else if (e.which == 3) { // right click - set block to purple
-            console.log('right click in grid');
-            currentGrid[(selectedCol % size) + (selectedRow * size)] = 2;
-            drawSquare(selectedRow, selectedCol, 'purple');
+            // currentGrid[(selectedCol % size) + (selectedRow * size)] = 2;
+            // drawSquare(selectedRow, selectedCol, 'purple');
+
+            if (currentGrid[(selectedCol % size) + (selectedRow * size)] == 2) {
+                currentGrid[(selectedCol % size) + (selectedRow * size)] = 0;
+                drawSquare(selectedRow, selectedCol, 'black');
+            } else {
+                currentGrid[(selectedCol % size) + (selectedRow * size)] = 2;
+                drawSquare(selectedRow, selectedCol, 'purple');
+            }
+
         }
         console.log(currentGrid);
         console.log(grid.solution);
