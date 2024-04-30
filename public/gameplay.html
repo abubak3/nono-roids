@@ -5,46 +5,47 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Nono-roids Gameplay</title>
-    <link rel="stylesheet" href="css/style.css"> 
+    <link rel="stylesheet" href="css/style.css">
 
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400&display=swap" rel="stylesheet">
-   
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <style>
-      /* Apply custom font style to menu bar text */
-      .top-menu-bar {
-          font-family: 'Orbitron', sans-serif;
-          color: white; /* Set text color to white */
-      }
-  </style>
+        /* Apply custom font style to menu bar text */
+        .top-menu-bar {
+            font-family: 'Orbitron', sans-serif;
+            color: white;
+            /* Set text color to white */
+        }
+    </style>
 
-  </head>
+</head>
 
-  <body class="bg-gray-100 bg-cover bg-center" style="background-image: url('images/gamebackground.jpg');">
+<body class="bg-gray-100 bg-cover bg-center" style="background-image: url('images/gamebackground.jpg');">
     <div class="container mx-auto py-8">
-      <!-- Top menu bar -->
-      <div class="flex flex-row justify-between mb-4 top-menu-bar">
-        <h2>Nono-Roids</h2>
-        <h2>Lives: 3</h2>
-      </div>
-      
-    <!-- Game Area -->
-    <div class="flex justify-center">
-      <div class="bg-white p-4 border border-gray-300 rounded-md">
-            <!-- Your game area (nonogram grid and asteroids) will go here -->
-            <!-- Replace this with your actual game canvas -->
-            <div class="bg-gray-200 flex justify-center items-center">
-                <canvas id="gameCanvas" width="1000" height="600" >
-                </canvas>
-            </div>
-      </div>
-  </div>
-  </div>
+        <!-- Top menu bar -->
+        <div class="flex flex-row justify-between mb-4 top-menu-bar">
+            <h2>Nono-Roids</h2>
+            <h2>Lives: 3</h2>
+        </div>
 
-  <script src="js/script.js"></script>
+        <!-- Game Area -->
+        <div class="flex justify-center">
+            <div class="bg-white p-4 border border-gray-300 rounded-md">
+                <!-- Your game area (nonogram grid and asteroids) will go here -->
+                <!-- Replace this with your actual game canvas -->
+                <div class="bg-gray-200 flex justify-center items-center">
+                    <canvas id="gameCanvas" width="1000" height="600">
+                    </canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
 </body>
 
 </html>

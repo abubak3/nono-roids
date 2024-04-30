@@ -2,52 +2,56 @@
 <html class="no-js" lang="">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Nono-roids</title>
-  <link rel="stylesheet" href="css/style.css"> 
-  <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Nono-roids</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
 
-  <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400&display=swap" rel="stylesheet">
 
-  <style>
-    #background-video {
-      position: fixed;
-      width: auto;
-      height: auto;
-      z-index: -1000;
-      background-size: cover;
-    }
+    <style>
+        #background-video {
+            position: fixed;
+            width: auto;
+            height: auto;
+            z-index: -1000;
+            background-size: cover;
+        }
 
-    body{
-      font-family: 'Orbitron', sans-serif; /* Use Orbitron font for the body */
-      overflow: hidden;
-      position: relative;
-    }
-  </style>
+        body {
+            font-family: 'Orbitron', sans-serif;
+            /* Use Orbitron font for the body */
+            overflow: hidden;
+            position: relative;
+        }
+    </style>
 
 </head>
 
 <body class="bg-gray-100">
 
-  <video autoplay loop muted id="background-video">
-    <source src="images/background.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
+    <video autoplay loop muted id="background-video">
+        <source src="images/background.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
 
-  <div class="container mx-auto py-8">
-      <!-- Top menu bar -->
-      <div class="flex justify-center mb-80">
-          <a href="gameplay.html?difficulty=easy" class="mr-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Easy</a>
-          <a href="gameplay.html?difficulty=medium" class="mr-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Medium</a>
-          <a href="gameplay.html?difficulty=hard" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Hard</a>
-      </div>
-      
-      <!-- Title -->
-      <h1 class="text-6xl text-center font-bold mb-8">Nono-Roids</h1>
-      
-      <!-- Instructions -->
-      <p class="text-lg text-center">Instructions: Your instructions go here...</p>
-  </div>
+    <div class="container mx-auto py-8">
+        <!-- Top menu bar -->
+        <div class="flex justify-center mb-80">
+            <a href="gameplay.html?difficulty=easy"
+                class="mr-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Easy</a>
+            <a href="gameplay.html?difficulty=medium"
+                class="mr-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Medium</a>
+            <a href="gameplay.html?difficulty=hard"
+                class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Hard</a>
+        </div>
+
+        <!-- Title -->
+        <h1 class="text-6xl text-center font-bold mb-8">Nono-Roids</h1>
+
+        <!-- Instructions -->
+        <p class="text-lg text-center">Instructions: Your instructions go here...</p>
+    </div>
 </body>
