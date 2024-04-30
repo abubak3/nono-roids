@@ -1,6 +1,12 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
+// mouse positions
+let x, y;
+let startGridX, endGridX, startGridY, endGridY;
+
+let grid;
+
 /**
  * Nonogram Grid Keys
  */
@@ -8,50 +14,82 @@ const ctx = canvas.getContext("2d");
 // 0 = empty; 1 = yes; 2 = no
 
 // CURRENT
+let currentGrid;
 
 // HARD CODED GRIDS
-// Inner Grid
-let innerEasy = [2, 1, 1, 1, 2, 2, 2, 2, 2, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 2, 2, 1, 1, 1, 1]; // 1D array
+let innerEasy1 = [2,1,1,1,2, 2,2,2,2,1, 2,1,2,1,1, 1,2,1,1,2, 2,1,1,1,1];
+let clueEasy1 = {rows: [[0, 0, 3], [0, 0, 1], [0, 1, 2], [0, 1, 2], [0, 0, 4]], cols: [[0, 0, 1], [1, 1, 1], [0, 1, 2], [0, 1, 3], [0, 2, 1]]};
 
-// Clues
-let rowClueEasy = [[0, 0, 3], [0, 0, 1], [0, 1, 2], [0, 1, 2], [0, 0, 4]];
+let innerEasy2 = [1,1,2,1,2, 1,1,1,2,2, 2,2,1,2,1, 2,1,1,1,1, 2,2,1,1,1];
+let clueEasy2 = {rows: [[0, 2, 1], [0, 0, 3], [0, 1, 1], [0, 0, 4], [0, 0, 3]], cols: [[0, 0, 2], [0, 2, 1], [0, 0, 4], [0, 1, 2], [0, 0, 3]]};
 
-let colClueEasy = [[0, 0, 1], [1, 1, 1], [0, 1, 2], [0, 1, 3], [0, 2, 1]];
+let innerEasy3 = [2,1,2,1,2, 1,1,1,2,1, 1,2,1,2,2, 2,2,1,2,1, 1,1,1,2,2];
+let clueEasy3 = {rows: [[0, 1, 1], [0, 3, 1], [0, 1, 1], [0, 1, 1], [0, 0, 3]], cols: [[0, 2, 1], [0, 2, 1], [0, 0, 4], [0, 0, 1], [0, 1, 1]]};
 
-let clueEasy = {
-    rows: rowClueEasy, // [5 sub arrays [3 indexes max]]
-    cols: colClueEasy
-};
+let innerEasy4 = [1,2,1,2,2, 1,2,2,2,1, 2,1,1,1,1, 1,2,1,1, 1,2,1,2,1,1];
+let clueEasy4 = {rows: [[0, 1, 1], [0, 1, 1], [0, 0, 4], [0, 1, 3], [0, 1, 2]], cols: [[0, 2, 1], [0, 1, 1], [0, 1, 2], [0, 0, 3], [0, 0, 4]]};
 
-let innerHard = [];
-let rowClueHard = [[0, 4, 1], [0, 4, 2], [1, 1, 2], [0, 3, 4], [0, 4, 3], [0, 6, 2], [0, 1, 7], [0, 2, 4], [0, 1, 5], [2, 3, 1]];
+let innerEasy5 = [1,2,1,2,2, 1,1,1,2,2, 1,1,2,2,1, 2,1,1,1,2, 1,2,1,2,2];
+let clueEasy5 = {rows: [[0, 1, 1], [0, 0, 3], [0, 2, 1], [0, 0, 3], [0, 1, 1]], cols: [[0, 3, 1], [0, 0, 3], [0, 2, 2], [0, 0, 1], [0, 0, 1]]};
 
-let colClueHard = [[1, 3, 1], [0, 1, 7], [0, 6, 1], [0, 2, 3], [1, 3, 1], [1, 1, 5], [0, 1, 4], [0, 2, 6], [0, 6, 1], [3, 1, 2]];
+let innerMedium1 = [1,1,2,1,1,1,1,2,1,1,2,1,1,2,1,1,2,2,2,2,1,1,2,1,1,1,1,2,2,1,2,1,1,2,1,2,1,2,1,2,1,1,1,1,2,1,1,1,1];
+let clueMedium1 = {rows: [[0, 2, 4], [0, 2, 2], [0, 2, 1], [0, 1, 4], [1, 2, 1], [1, 1, 2], [0, 2, 4]],    cols: [[1, 2, 1], [0, 3, 3], [0, 1, 1], [0, 1, 4], [2, 2, 1], [2, 1, 2], [1, 1, 3]]}
 
-let clueHard = {
-    rows: rowClueHard,
-    cols: colClueHard
-};
+let innerMedium2 = [1,1,2,1,1,1,1, 2,1,1,2,1,1,2,1,1,2,2,2,2,1,1,2,1,1,1,1,2,2,1,2,1,1,2,1,2,1,2,1,2,1,1,1,1,2,1,1,1,1];
+let clueMedium2 = {rows: [[0, 1, 5], [0, 3, 3], [0, 1, 2], [1, 3, 1], [0, 0, 6], [0, 3, 1], [0, 4, 1]],    cols: [[0, 2, 4], [0, 1, 3], [0, 2, 4], [1, 3, 1], [0, 2, 2], [0, 3, 2], [0, 4, 1]]}
 
-let innerMedium = [];
-let rowClueMedium = [[0, 1, 1], [0, 3, 1], [0, 2, 1], [0, 1, 2], [0, 3, 1], [0, 1, 3], [0, 0, 5]];
-let colClueMedium = [[2, 1, 1], [0, 4, 1], [0, 1, 3], [0, 1, 1], [0, 2, 2], [1, 1, 1], [0, 1, 2]];
+let innerMedium3 = [1,1,1,1,2,1,1,1,1,1,2,1,1,1,2,1,2,1,1,2,2,1,1,1,1,1,2,1,1,2,2,1,2,2,2,1,1,1,1,1,2,2,2,1,1,2,2,1,1];
+let clueMedium3 = {rows: [[0, 4, 2], [0, 3, 3], [0, 1, 2], [0, 5, 1], [0, 1, 1], [0, 0, 5], [0, 2, 2]],    cols: [[0, 2, 3], [0, 4, 2], [2, 1, 2], [0, 1, 4], [0, 3, 1], [0, 2, 1], [2, 1, 1]]}
 
-let clueMedium = {
-    rows: rowClueMedium,
-    cols: colClueMedium
-}
+let innerMedium4 = [2,2,1,1,1,2,2,1,2,1,2,2,2,1,2,1,1,2,2,2,1,1,1,2,1,1,1,1,2,2,1,2,1,1,1,1,1,2,2,1,2,2,1,1,2,1,1,2,1];
+let clueMedium4 = {rows: [[0, 0, 3], [1, 1, 1], [0, 2, 1], [0, 2, 4], [0, 1, 3], [0, 2, 1], [2, 2, 1]],    cols: [[1, 1, 2], [0, 2, 2], [0, 3, 1], [1, 1, 1], [0, 1, 4], [0, 0, 2], [0, 4, 1]]}
+
+let innerMedium5 = [1,2,2,1,2,1,1,2,1,2,1,2,2,2,1,1,2,1,1,1,1,1,2,2,2,1,1,1,1,1,2,2,1,2,1,2,1,1,1,1,1,1,1,1,1,2,2,1,2];
+let clueMedium5 = {rows: [[1, 1, 2], [0, 1, 1], [0, 2, 4], [0, 1, 3], [2, 1, 1], [0, 0, 6], [0, 3, 1]],    cols: [[1, 3, 1], [0, 2, 3], [0, 0, 2], [0, 3, 1], [0, 0, 4], [1, 2, 2], [0, 1, 4]]}
+
+// #440152
+let innerHard1 = [2,2,2,2,2,2,1,1,1,1,1,1,1,2,2,2,2,2,1,1,1,2,2,1,1,1,2,2,1,1,1,2,2,1,1,1,1,2,1,1,1,2,2,2,1,1,2,2,1,1,2,2,2,1,1,1,2,2,1,1,1,1,1,1,1,1,2,2,1,2,2,2,2,2,2,2,2,1,2,2,1,1,1,1,1,1,2,1,2,2,1,1,2,2,2,1,1,1,1,1];
+let clueHard1 = {rows: [[0, 0, 4], [0, 3, 2], [1, 3, 2], [1, 4, 2], [1, 2, 2], [0, 3, 2], [0, 6, 1], [0, 0, 1], [0, 6, 1], [0, 2, 5]],    cols: [[4, 1, 2], [1, 1, 2], [1, 1, 1], [2, 2, 1], [0, 5, 1], [0, 5, 2], [1, 1, 1], [0, 1, 3], [0, 7, 1], [0, 6, 1]]};
+
+let innerHard2 = [1,1,2,2,2,2,2,2,2,2,1,1,1,1,1,2,2,1,1,1,2,1,1,1,2,1,1,1,1,2,2,2,2,2,2,1,1,1,1,1,1,2,2,2,2,1,1,1,1,1,2,2,1,2,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,1,1,1,1,1,2,1,1,1,2,2,2,1,2,2,1,1,1,1,1,2,2,1,1,2,1,1,2,2,1];
+let clueHard2 = {rows: [[0, 0, 2], [0, 5, 3], [0, 3, 4], [0, 0, 5], [0, 1, 5], [0, 1, 6], [0, 0, 4], [0, 5, 3], [0, 1, 5], [2, 2, 1]],    cols: [[2, 1, 2], [0, 3, 2], [0, 2, 5], [2, 2, 1], [1, 1, 1], [0, 4, 2], [0, 4, 3], [0, 5, 2], [0, 5, 2], [1, 3, 2]]};
+
+let innerHard3 = [2,2,2,2,2,2,2,1,1,2,2,2,2,2,1,1,1,1,2,1,1,2,2,2,2,1,1,2,2,2,2,1,1,1,2,2,2,1,1,1,1,2,2,2,2,2,2,1,1,1,1,2,2,2,2,2,1,1,1,1,1,1,2,2,2,1,1,1,1,1,1,2,2,1,2,2,2,2,2,1,2,1,1,1,2,1,2,1,1,1,1,1,1,2,2,2,2,1,1,2];
+let clueHard3 = {rows: [[0, 0, 2], [0, 4, 1], [0, 1, 2], [0, 3, 3], [0, 1, 3], [0, 1, 4], [0, 2, 5], [1, 1, 1], [3, 1, 3], [0, 3, 2]],    cols: [[1, 4, 1], [1, 1, 2], [0, 1, 2], [0, 1, 2], [0, 0, 1], [2, 1, 1], [0, 2, 2], [2, 4, 2], [1, 4, 2], [0, 1, 6]]};
+
+// #127847
+let innerHard4 = [2,2,2,1,1,1,1,2,1,1,1,2,2,2,2,1,1,2,1,1,1,1,2,2,2,2,1,1,1,1,2,2,1,1,2,2,1,1,1,2,1,1,1,2,2,2,2,1,2,2,2,2,2,2,1,2,1,1,2,2,2,2,2,2,1,1,2,2,2,2,2,2,2,2,2,1,1,1,1,2,1,1,1,1,1,1,2,2,1,2,1,1,2,2,2,2,2,2,2,2];
+let clueHard4 = {rows: [[0, 4, 2], [1, 2, 2], [0, 2, 4], [0, 2, 3], [0, 3, 1], [0, 1, 2], [0, 0, 2], [0, 0, 4], [0, 6, 1], [0, 0, 2]],    cols: [[2, 1, 2], [1, 1, 2], [0, 2, 1], [1, 1, 1], [1, 2, 1], [0, 2, 3], [4, 1, 1], [0, 4, 1], [0, 4, 2], [0, 0, 3]]};
+
+// 
+let innerHard5 = [2,2,1,1,2,2,2,2,2,2,1,2,2,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,1,1,1,2,2,2,2,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,1,1,1,1,1,1,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,2,2,2,2,2,1,1,1,2,1,2,2,2,2,2,2,2,2,2];
+let clueHard5 = {rows: [[0, 0, 2], [0, 1, 7], [0, 1, 2], [0, 1, 5], [0, 1, 7], [0, 5, 2], [0, 0, 4], [0, 0, 8], [0, 1, 3], [0, 0, 1]],    cols: [[0, 6, 2], [0, 0, 2], [0, 1, 3], [0, 2, 4], [1, 2, 1], [1, 2, 1], [1, 2, 2], [1, 2, 2], [0, 5, 2], [0, 5, 1]]};
 
 class Grid {
     constructor(solution, clues, size) {
         this.solution = solution;
         this.clues = clues;
         this.size = size;
+        this.stringSolution = JSON.stringify(solution);
     }
 
-    checkGrid() { }
+    checkGrid() {
+        if (JSON.stringify(currentGrid) == (this.stringSolution)) {
+            console.log("nongram is correct!");
+            ctx.beginPath();
+            ctx.rect(0, 0, 1000, 600);
+            ctx.fillStyle = "green";
+            ctx.fill();
+            ctx.stroke();
+            // Wait for 5 seconds before redirecting to index.html
+        setTimeout(function() {
+          window.location.href = "index.html"; // Replace "index.html" with your actual index file path
+      }, 5000);
+        }
+    }
 
     drawClues() {
+        ctx.fillStyle = "white";      
         ctx.font = "18px Arial";
         ctx.textAlign = "left";
         ctx.textBaseline = "top";
@@ -106,21 +144,35 @@ $(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const difficulty = urlParams.get('difficulty');
 
+    ctx.rect(0, 0, 1000, 600);
+    ctx.fillStyle = "black";
+    ctx.fill();
+
     // Call the appropriate drawing function based on difficulty level
     switch (difficulty) {
         case 'easy':
             drawEasy();
-            let gridEasy = new Grid(innerEasy, clueEasy, 5);
-            gridEasy.drawClues();
+
+            // pick a grid 1 to 5  
+
+            grid = new Grid(innerEasy1, clueEasy1, 5);
+            grid.drawClues();
+            
+            startGridX = 470;
+            endGridX = 620;
+            startGridY = 270;
+            endGridY = 420;
+            
+            currentGrid = [0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0];
             break;
         case 'medium':
             drawMedium();
-            let gridMedium = new Grid(innerMedium, clueMedium, 7);
+            let gridMedium = new Grid(clueMedium1, clueMedium1, 7);
             gridMedium.drawClues();
             break;
         case 'hard':
             drawHard();
-            let gridHard = new Grid(innerHard, clueHard, 10);
+            let gridHard = new Grid(innerHard1, clueHard1, 10);
             gridHard.drawClues();
             break;
         default:
@@ -134,6 +186,8 @@ $(() => {
 // for medium we need to start at (350, 150)
 // for hard we need to start at (305, 105)
 function drawEasy() {
+    ctx.strokeStyle = "#FFFFFF";
+
     // Draw Lines
     ctx.beginPath();
     ctx.moveTo(380, 180);
@@ -164,6 +218,8 @@ function drawEasy() {
 
 
 function drawMedium() {
+    ctx.strokeStyle = "#FFFFFF";
+
     // Draw Lines
     ctx.beginPath();
     ctx.moveTo(350, 150);
@@ -194,6 +250,8 @@ function drawMedium() {
 
 
 function drawHard() {
+    ctx.strokeStyle = "#FFFFFF";
+
     // Draw Lines
     ctx.beginPath();
     ctx.moveTo(305, 105);
@@ -222,10 +280,49 @@ function drawHard() {
     ctx.stroke();
 }
 
+canvas.oncontextmenu = function (e) {
+    e.preventDefault();
+};
 
-$("#gameCanvas").leftClick((e) => {
-    x = e.clientX;
-    y = e.clientY;
-    selectedCol = Math.floor(x / 50);
-    selectedRow = Math.floor(y / 50);
+
+/*
+    1d -> 2d 
+    (x%5) + (y*5)
+*/
+
+$("#gameCanvas").mousedown((e) => {
+    getMousePos(e);
+    if (x > startGridX && x < endGridX && y > startGridY && y < endGridY) {
+        let selectedCol = Math.floor((x - startGridX) / 30);
+        let selectedRow = Math.floor((y - startGridY) / 30);
+        if (e.which == 1) { // left click - set block to white
+            console.log('left click in grid');
+            currentGrid[(selectedCol % 5) + (selectedRow * 5)] = 1;
+            drawSquare(selectedRow, selectedCol, 'white');
+        } else if (e.which == 3) { // right click - set block to purple
+            console.log('right click in grid');
+            currentGrid[(selectedCol % 5) + (selectedRow * 5)] = 2;
+            drawSquare(selectedRow, selectedCol, 'purple');
+        }
+        console.log(currentGrid);
+        console.log(grid.solution);
+        grid.checkGrid();
+    }
 });
+
+
+function drawSquare(row, col, color) {
+    ctx.beginPath();
+    ctx.rect(startGridX + (col*30), startGridY +  (row * 30), 30, 30);
+    ctx.fillStyle = color;
+    ctx.fill();
+    ctx.stroke();
+}
+
+
+function getMousePos(evt) {
+    var rect = canvas.getBoundingClientRect();
+    x = evt.clientX - rect.left;
+    y = evt.clientY - rect.top;
+}
+
