@@ -357,3 +357,23 @@ function getMousePos(evt) {
     y = evt.clientY - rect.top;
 }
 
+
+function loseLife() {
+  lives--; // Decrease the lives count
+  
+  // Update the menu bar <h2> to display the new lives count
+  const lives = document.getElementById("lives");
+  menuBar.innerText = "Lives: " + lives;
+
+  // If lives reach 0, change the screen to red and return home after 5 seconds
+  if (lives === 0) {
+      ctx.beginPath();
+      ctx.rect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "red";
+      ctx.fill();
+
+      setTimeout(() => {
+          window.location.href = "index.html"; // Redirect to index.html after 5 seconds
+      }, 5000); // 5000 milliseconds = 5 seconds
+  }
+}
