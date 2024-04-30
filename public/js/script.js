@@ -33,6 +33,14 @@ let clueEasy4 = {rows: [[0, 1, 1], [0, 1, 1], [0, 0, 4], [0, 1, 3], [0, 1, 2]], 
 let innerEasy5 = [1,2,1,2,2, 1,1,1,2,2, 1,1,2,2,1, 2,1,1,1,2, 1,2,1,2,2];
 let clueEasy5 = {rows: [[0, 1, 1], [0, 0, 3], [0, 2, 1], [0, 0, 3], [0, 1, 1]], cols: [[0, 3, 1], [0, 0, 3], [0, 2, 2], [0, 0, 1], [0, 0, 1]]};
 
+const easyGrids = [
+  { inner: innerEasy1, clue: clueEasy1 },
+  { inner: innerEasy2, clue: clueEasy2 },
+  { inner: innerEasy3, clue: clueEasy3 },
+  { inner: innerEasy4, clue: clueEasy4 },
+  { inner: innerEasy5, clue: clueEasy5 }
+];
+
 let innerMedium1 = [1,1,2,1,1,1,1,2,1,1,2,1,1,2,1,1,2,2,2,2,1,1,2,1,1,1,1,2,2,1,2,1,1,2,1,2,1,2,1,2,1,1,1,1,2,1,1,1,1];
 let clueMedium1 = {rows: [[0, 2, 4], [0, 2, 2], [0, 2, 1], [0, 1, 4], [1, 2, 1], [1, 1, 2], [0, 2, 4]],    cols: [[1, 2, 1], [0, 3, 3], [0, 1, 1], [0, 1, 4], [2, 2, 1], [2, 1, 2], [1, 1, 3]]}
 
@@ -48,7 +56,14 @@ let clueMedium4 = {rows: [[0, 0, 3], [1, 1, 1], [0, 2, 1], [0, 2, 4], [0, 1, 3],
 let innerMedium5 = [1,2,2,1,2,1,1,2,1,2,1,2,2,2,1,1,2,1,1,1,1,1,2,2,2,1,1,1,1,1,2,2,1,2,1,2,1,1,1,1,1,1,1,1,1,2,2,1,2];
 let clueMedium5 = {rows: [[1, 1, 2], [0, 1, 1], [0, 2, 4], [0, 1, 3], [2, 1, 1], [0, 0, 6], [0, 3, 1]],    cols: [[1, 3, 1], [0, 2, 3], [0, 0, 2], [0, 3, 1], [0, 0, 4], [1, 2, 2], [0, 1, 4]]}
 
-// #440152
+const mediumGrids = [
+  { inner: innerMedium1, clue: clueMedium1 },
+  { inner: innerMedium2, clue: clueMedium2 },
+  { inner: innerMedium3, clue: clueMedium3 },
+  { inner: innerMedium4, clue: clueMedium4 },
+  { inner: innerMedium5, clue: clueMedium5 }
+];
+
 let innerHard1 = [2,2,2,2,2,2,1,1,1,1,1,1,1,2,2,2,2,2,1,1,1,2,2,1,1,1,2,2,1,1,1,2,2,1,1,1,1,2,1,1,1,2,2,2,1,1,2,2,1,1,2,2,2,1,1,1,2,2,1,1,1,1,1,1,1,1,2,2,1,2,2,2,2,2,2,2,2,1,2,2,1,1,1,1,1,1,2,1,2,2,1,1,2,2,2,1,1,1,1,1];
 let clueHard1 = {rows: [[0, 0, 4], [0, 3, 2], [1, 3, 2], [1, 4, 2], [1, 2, 2], [0, 3, 2], [0, 6, 1], [0, 0, 1], [0, 6, 1], [0, 2, 5]],    cols: [[4, 1, 2], [1, 1, 2], [1, 1, 1], [2, 2, 1], [0, 5, 1], [0, 5, 2], [1, 1, 1], [0, 1, 3], [0, 7, 1], [0, 6, 1]]};
 
@@ -58,13 +73,19 @@ let clueHard2 = {rows: [[0, 0, 2], [0, 5, 3], [0, 3, 4], [0, 0, 5], [0, 1, 5], [
 let innerHard3 = [2,2,2,2,2,2,2,1,1,2,2,2,2,2,1,1,1,1,2,1,1,2,2,2,2,1,1,2,2,2,2,1,1,1,2,2,2,1,1,1,1,2,2,2,2,2,2,1,1,1,1,2,2,2,2,2,1,1,1,1,1,1,2,2,2,1,1,1,1,1,1,2,2,1,2,2,2,2,2,1,2,1,1,1,2,1,2,1,1,1,1,1,1,2,2,2,2,1,1,2];
 let clueHard3 = {rows: [[0, 0, 2], [0, 4, 1], [0, 1, 2], [0, 3, 3], [0, 1, 3], [0, 1, 4], [0, 2, 5], [1, 1, 1], [3, 1, 3], [0, 3, 2]],    cols: [[1, 4, 1], [1, 1, 2], [0, 1, 2], [0, 1, 2], [0, 0, 1], [2, 1, 1], [0, 2, 2], [2, 4, 2], [1, 4, 2], [0, 1, 6]]};
 
-// #127847
 let innerHard4 = [2,2,2,1,1,1,1,2,1,1,1,2,2,2,2,1,1,2,1,1,1,1,2,2,2,2,1,1,1,1,2,2,1,1,2,2,1,1,1,2,1,1,1,2,2,2,2,1,2,2,2,2,2,2,1,2,1,1,2,2,2,2,2,2,1,1,2,2,2,2,2,2,2,2,2,1,1,1,1,2,1,1,1,1,1,1,2,2,1,2,1,1,2,2,2,2,2,2,2,2];
 let clueHard4 = {rows: [[0, 4, 2], [1, 2, 2], [0, 2, 4], [0, 2, 3], [0, 3, 1], [0, 1, 2], [0, 0, 2], [0, 0, 4], [0, 6, 1], [0, 0, 2]],    cols: [[2, 1, 2], [1, 1, 2], [0, 2, 1], [1, 1, 1], [1, 2, 1], [0, 2, 3], [4, 1, 1], [0, 4, 1], [0, 4, 2], [0, 0, 3]]};
 
-// 
 let innerHard5 = [2,2,1,1,2,2,2,2,2,2,1,2,2,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,1,1,1,2,2,2,2,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,1,1,1,1,1,1,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,2,2,2,2,2,1,1,1,2,1,2,2,2,2,2,2,2,2,2];
 let clueHard5 = {rows: [[0, 0, 2], [0, 1, 7], [0, 1, 2], [0, 1, 5], [0, 1, 7], [0, 5, 2], [0, 0, 4], [0, 0, 8], [0, 1, 3], [0, 0, 1]],    cols: [[0, 6, 2], [0, 0, 2], [0, 1, 3], [0, 2, 4], [1, 2, 1], [1, 2, 1], [1, 2, 2], [1, 2, 2], [0, 5, 2], [0, 5, 1]]};
+
+const hardGrids = [
+  { inner: innerHard1, clue: clueHard1 },
+  { inner: innerHard2, clue: clueHard2 },
+  { inner: innerHard3, clue: clueHard3 },
+  { inner: innerHard4, clue: clueHard4 },
+  { inner: innerHard5, clue: clueHard5 }
+];
 
 class Grid {
     constructor(solution, clues) {
@@ -154,9 +175,12 @@ $(() => {
             drawEasy();
             size = 5;
 
-            // pick a grid 1 to 5  
+            randomIndex = Math.floor(Math.random() * easyGrids.length);
+            selectedGrid = easyGrids[randomIndex];
+            inner = selectedGrid.inner;
+            clue = selectedGrid.clue;
 
-            grid = new Grid(innerEasy1, clueEasy1);
+            grid = new Grid(inner, clue);
             grid.drawClues();
 
             startGridX = 470;
@@ -170,7 +194,12 @@ $(() => {
             drawMedium();
             size = 7;
 
-            grid = new Grid(innerMedium1, clueMedium1);
+            randomIndex = Math.floor(Math.random() * mediumGrids.length);
+            selectedGrid = mediumGrids[randomIndex];
+            inner = selectedGrid.inner;
+            clue = selectedGrid.clue;
+
+            grid = new Grid(inner, clue);
             grid.drawClues();
 
             startGridX = 440;
@@ -184,9 +213,13 @@ $(() => {
             drawHard();
             size = 10;
             
-            grid = new Grid(innerHard1, clueHard1);
-            grid.drawClues();
+            randomIndex = Math.floor(Math.random() * hardGrids.length);
+            selectedGrid = hardGrids[randomIndex];
+            inner = selectedGrid.inner;
+            clue = selectedGrid.clue;
 
+            grid = new Grid(inner, clue);
+            grid.drawClues();
             startGridX = 395;
             endGridX = 695;
             startGridY = 195;
@@ -356,7 +389,6 @@ function getMousePos(evt) {
     x = evt.clientX - rect.left;
     y = evt.clientY - rect.top;
 }
-
 
 function loseLife() {
   lives--; // Decrease the lives count
