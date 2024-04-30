@@ -1,20 +1,21 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-// mouse positions
-let x, y;
-let startGridX, endGridX, startGridY, endGridY;
-
-let grid;
-
 /**
  * Nonogram Grid Keys
  */
 
 // 0 = empty; 1 = yes; 2 = no
 
-// CURRENT
+/**
+ * Globals!
+ */
 let currentGrid;
+let grid, size;
+
+// mouse positions
+let x, y;
+let startGridX, endGridX, startGridY, endGridY;
 
 // HARD CODED GRIDS
 let innerEasy1 = [2,1,1,1,2, 2,2,2,2,1, 2,1,2,1,1, 1,2,1,1,2, 2,1,1,1,1];
@@ -66,10 +67,9 @@ let innerHard5 = [2,2,1,1,2,2,2,2,2,2,1,2,2,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,1,1,1,
 let clueHard5 = {rows: [[0, 0, 2], [0, 1, 7], [0, 1, 2], [0, 1, 5], [0, 1, 7], [0, 5, 2], [0, 0, 4], [0, 0, 8], [0, 1, 3], [0, 0, 1]],    cols: [[0, 6, 2], [0, 0, 2], [0, 1, 3], [0, 2, 4], [1, 2, 1], [1, 2, 1], [1, 2, 2], [1, 2, 2], [0, 5, 2], [0, 5, 1]]};
 
 class Grid {
-    constructor(solution, clues, size) {
+    constructor(solution, clues) {
         this.solution = solution;
         this.clues = clues;
-        this.size = size;
         this.stringSolution = JSON.stringify(solution);
     }
 
@@ -96,7 +96,7 @@ class Grid {
 
         let startX, startY;
 
-        switch (this.size) {
+        switch (size) {
             case 5: // Easy
                 startX = 380;
                 startY = 180;
@@ -115,7 +115,7 @@ class Grid {
         }
 
         // draw colClues
-        for (let i = 0; i < this.size; i++) {
+        for (let i = 0; i < size; i++) {
             for (let j = 0; j < 3; j++) {
               if (this.clues.cols[i][j] !== 0) {
                 const x = (i * 30) + startX + 100;
@@ -126,7 +126,7 @@ class Grid {
         }
 
         // draw rowClues
-        for (let i = 0; i < this.size; i++) {
+        for (let i = 0; i < size; i++) {
             for (let j = 0; j < 3; j++) {
               if (this.clues.rows[i][j] !== 0) {
                 const x = (j * 30) + startX + 10;
@@ -152,28 +152,47 @@ $(() => {
     switch (difficulty) {
         case 'easy':
             drawEasy();
+            size = 5;
 
             // pick a grid 1 to 5  
 
-            grid = new Grid(innerEasy1, clueEasy1, 5);
+            grid = new Grid(innerEasy1, clueEasy1);
             grid.drawClues();
-            
+
             startGridX = 470;
             endGridX = 620;
             startGridY = 270;
             endGridY = 420;
-            
+
             currentGrid = [0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0];
             break;
         case 'medium':
             drawMedium();
-            let gridMedium = new Grid(clueMedium1, clueMedium1, 7);
-            gridMedium.drawClues();
+            size = 7;
+
+            grid = new Grid(innerMedium1, clueMedium1);
+            grid.drawClues();
+
+            startGridX = 440;
+            endGridX = 650;
+            startGridY = 240;
+            endGridY = 450;
+
+            currentGrid = [0,0,0,0,0,0,0, 0,0,0,0,0,0,0, 0,0,0,0,0,0,0, 0,0,0,0,0,0,0, 0,0,0,0,0,0,0, 0,0,0,0,0,0,0, 0,0,0,0,0,0,0];
             break;
         case 'hard':
             drawHard();
-            let gridHard = new Grid(innerHard1, clueHard1, 10);
-            gridHard.drawClues();
+            size = 10;
+            
+            grid = new Grid(innerHard1, clueHard1);
+            grid.drawClues();
+
+            startGridX = 395;
+            endGridX = 695;
+            startGridY = 195;
+            endGridY = 495;
+
+            currentGrid = [0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0];
             break;
         default:
             // Handle invalid difficulty level or default to easy
@@ -186,7 +205,7 @@ $(() => {
 // for medium we need to start at (350, 150)
 // for hard we need to start at (305, 105)
 function drawEasy() {
-    ctx.strokeStyle = "#FFFFFF";
+    ctx.strokeStyle = "#DCD0FF";
 
     // Draw Lines
     ctx.beginPath();
@@ -218,7 +237,7 @@ function drawEasy() {
 
 
 function drawMedium() {
-    ctx.strokeStyle = "#FFFFFF";
+    ctx.strokeStyle = "#DCD0FF";
 
     // Draw Lines
     ctx.beginPath();
@@ -250,7 +269,7 @@ function drawMedium() {
 
 
 function drawHard() {
-    ctx.strokeStyle = "#FFFFFF";
+    ctx.strokeStyle = "#DCD0FF";
 
     // Draw Lines
     ctx.beginPath();
@@ -297,11 +316,11 @@ $("#gameCanvas").mousedown((e) => {
         let selectedRow = Math.floor((y - startGridY) / 30);
         if (e.which == 1) { // left click - set block to white
             console.log('left click in grid');
-            currentGrid[(selectedCol % 5) + (selectedRow * 5)] = 1;
+            currentGrid[(selectedCol % size) + (selectedRow * size)] = 1;
             drawSquare(selectedRow, selectedCol, 'white');
         } else if (e.which == 3) { // right click - set block to purple
             console.log('right click in grid');
-            currentGrid[(selectedCol % 5) + (selectedRow * 5)] = 2;
+            currentGrid[(selectedCol % size) + (selectedRow * size)] = 2;
             drawSquare(selectedRow, selectedCol, 'purple');
         }
         console.log(currentGrid);
