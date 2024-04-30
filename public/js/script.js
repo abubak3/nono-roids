@@ -17,6 +17,8 @@ let grid, size;
 let x, y;
 let startGridX, endGridX, startGridY, endGridY;
 
+const asteroids = [];
+
 // HARD CODED GRIDS
 let innerEasy1 = [2,1,1,1,2, 2,2,2,2,1, 2,1,2,1,1, 1,2,1,1,2, 2,1,1,1,1];
 let clueEasy1 = {rows: [[0, 0, 3], [0, 0, 1], [0, 1, 2], [0, 1, 2], [0, 0, 4]], cols: [[0, 0, 1], [1, 1, 1], [0, 1, 2], [0, 1, 3], [0, 2, 1]]};
@@ -96,17 +98,21 @@ class Grid {
 
     checkGrid() {
         if (JSON.stringify(currentGrid) == (this.stringSolution)) {
-            console.log("nongram is correct!");
-            ctx.beginPath();
-            ctx.rect(0, 0, 1000, 600);
-            ctx.fillStyle = "green";
-            ctx.fill();
-            ctx.stroke();
-            // Wait for 5 seconds before redirecting to index.html
-        setTimeout(function() {
-          window.location.href = "index.html"; // Replace "index.html" with your actual index file path
-      }, 5000);
-        }
+          console.log("nongram is correct!");
+
+          // fill screen to be green
+          ctx.beginPath();
+          ctx.rect(0, 0, 1000, 600);
+          ctx.fillStyle = "green";
+          ctx.fill();
+          ctx.stroke();
+          // maybe add countdown animation and confetti?
+
+          // Wait for 5 seconds before redirecting to index.html
+          setTimeout(function() {
+            window.location.href = "index.html"; // Replace "index.html" with your actual index file path
+          }, 5000);
+      }
     }
 
     drawClues() {
@@ -159,27 +165,111 @@ class Grid {
     }
 }
 
+class Asteroid{
+  constructor(x, y, size, speed, direction){
+    this.x = x;
+    this.y = y;
+    this.size = size;
+    this.speed = speed;
+    this.direction = direction;
+  }
+
+  // this will be replaced with image
+  draw() {
+    // Draw the asteroid as a circle
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size / 2, 0, Math.PI * 2);
+    ctx.fillStyle = "#808080"; // Adjust color as needed
+    ctx.fill();
+    ctx.closePath();
+}
+
+// this is wrong - they only move in one direction for now - they need to move toward the center?
+  move() {
+    // Move the asteroid
+    if (this.direction === "left") {
+        this.x -= this.speed;
+    } else if (this.direction === "right") {
+        this.x += this.speed;
+    } else if (this.direction === "up") {
+        this.y -= this.speed;
+    } else if (this.direction === "down") {
+        this.y += this.speed;
+    }
+  }
+}
+
+
+// redraw the asteroids? need to get rid of previous drawing.... they look like fingers not circles
+function drawAsteroids() {
+  asteroids.forEach(asteroid => {
+      asteroid.draw();
+      asteroid.move();
+  });
+}
+
+// to generate a new asteroid
+function generateAsteroids() {
+  const edge = Math.floor(Math.random() * 4); // Randomly select one of the four edges
+  let x, y, direction;
+
+  switch (edge) {
+      case 0: // Top edge
+          x = Math.random() * canvas.width;
+          y = 0;
+          direction = "down";
+          break;
+      case 1: // Right edge
+          x = canvas.width;
+          y = Math.random() * canvas.height;
+          direction = "left";
+          break;
+      case 2: // Bottom edge
+          x = Math.random() * canvas.width;
+          y = canvas.height;
+          direction = "up";
+          break;
+      case 3: // Left edge
+          x = 0;
+          y = Math.random() * canvas.height;
+          direction = "right";
+          break;
+  }
+
+  const size = 50; // Adjust size according to your preference
+  const speed = 2; // Adjust speed according to your preference
+
+  const asteroid = new Asteroid(x, y, size, speed, direction);
+  asteroids.push(asteroid);
+  console.log("asteroid pushed at " + x + " , " + y + " with direction " + direction);
+  drawAsteroids();
+}
+
+// every 5 seconds make a new asteroid  -will change for difficulty
+setInterval(generateAsteroids, 5000); // Generate asteroids every 5 seconds
 
 $(() => {
     // Extract difficulty level from URL
     const urlParams = new URLSearchParams(window.location.search);
     const difficulty = urlParams.get('difficulty');
 
+    // fill canvas
     ctx.rect(0, 0, 1000, 600);
     ctx.fillStyle = "black";
     ctx.fill();
 
-    // Call the appropriate drawing function based on difficulty level
     switch (difficulty) {
         case 'easy':
-            drawEasy();
-            size = 5;
+            drawEasy();    // Call the appropriate drawing function based on difficulty level
+            size = 5;      // set size of grid
 
+            // randomly select a puzzle
             randomIndex = Math.floor(Math.random() * easyGrids.length);
             selectedGrid = easyGrids[randomIndex];
             inner = selectedGrid.inner;
             clue = selectedGrid.clue;
 
+            // set current grid and draw clues
             grid = new Grid(inner, clue);
             grid.drawClues();
 
@@ -187,7 +277,7 @@ $(() => {
             endGridX = 620;
             startGridY = 270;
             endGridY = 420;
-
+  
             currentGrid = [0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0];
             break;
         case 'medium':
@@ -235,10 +325,8 @@ $(() => {
 
 
 // for easy we need to start at (380,180)
-// for medium we need to start at (350, 150)
-// for hard we need to start at (305, 105)
 function drawEasy() {
-    ctx.strokeStyle = "#DCD0FF";
+    ctx.strokeStyle = "#DCD0FF"; // lilac grid lines
 
     // Draw Lines
     ctx.beginPath();
@@ -269,6 +357,7 @@ function drawEasy() {
 }
 
 
+// for medium we need to start at (350, 150)
 function drawMedium() {
     ctx.strokeStyle = "#DCD0FF";
 
@@ -301,6 +390,7 @@ function drawMedium() {
 }
 
 
+// for hard we need to start at (305, 105)
 function drawHard() {
     ctx.strokeStyle = "#DCD0FF";
 
@@ -336,12 +426,6 @@ canvas.oncontextmenu = function (e) {
     e.preventDefault();
 };
 
-
-/*
-    1d -> 2d 
-    (x%5) + (y*5)
-*/
-
 $("#gameCanvas").mousedown((e) => {
     getMousePos(e);
     if (x > startGridX && x < endGridX && y > startGridY && y < endGridY) {
@@ -356,9 +440,6 @@ $("#gameCanvas").mousedown((e) => {
                 drawSquare(selectedRow, selectedCol, 'white');
             }
         } else if (e.which == 3) { // right click - set block to purple
-            // currentGrid[(selectedCol % size) + (selectedRow * size)] = 2;
-            // drawSquare(selectedRow, selectedCol, 'purple');
-
             if (currentGrid[(selectedCol % size) + (selectedRow * size)] == 2) {
                 currentGrid[(selectedCol % size) + (selectedRow * size)] = 0;
                 drawSquare(selectedRow, selectedCol, 'black');
@@ -374,7 +455,7 @@ $("#gameCanvas").mousedown((e) => {
     }
 });
 
-
+// to fill in a square on the grid
 function drawSquare(row, col, color) {
     ctx.beginPath();
     ctx.rect(startGridX + (col*30), startGridY +  (row * 30), 30, 30);
@@ -383,7 +464,7 @@ function drawSquare(row, col, color) {
     ctx.stroke();
 }
 
-
+// to get position of the mouse on the canvas
 function getMousePos(evt) {
     var rect = canvas.getBoundingClientRect();
     x = evt.clientX - rect.left;

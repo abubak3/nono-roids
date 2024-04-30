@@ -26,7 +26,7 @@ Basic idea - Nonogram game in center. Asteroids coming at it need to be clicked 
     - lives in top right corner                                                 - EXISTS - NEEDS TO UPDATE ONCE WE ADD ASTEROID FUNCTIONALITY
     - at bottom of page select the X or Check for the nonogram                  - FIXED TO BE RIGHT AND LEFT CLICKING
     - asteroid objects flying on page                                           - NOT DONE YET
-- Preload 
+- Preload
   - Hard Coded Nonogram Grids (maybe like 10 of each level?)                      - DONE
   - Upload images for asteroids and hearts                                        - UPLOADED ASTEROID PICS - NOT DOING HEARTS?
 - Win / Lose
