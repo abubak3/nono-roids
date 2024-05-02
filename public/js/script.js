@@ -10,58 +10,54 @@ const ctx = canvas.getContext("2d");
 /**
  * Globals!
  */
-let lives;
-let currentGrid;
-let grid, size;
-let asteroidSize;
-let count = 4;
+let lives; // player lives: 5 for easy, 4 for medium, 3 for hard
+let currentGrid; // current player grid
+let grid, size; // grid object and size of grid
+let asteroidSize; // asteroid size: 50 for easy, 40 for medium, 30 for hard
+let count = 4; // for the countdown for win/lose
 
-let asteroidInterval;
+let asteroidInterval; // generating asteroid interval
 
 // mouse positions
 let mouseX, mouseY;
 let startGridX, endGridX, startGridY, endGridY;
 
-// gborders
-let gridBorderStartX,gridBorderEndX, gridBorderStartY, griBorderEndY;
+// grid borders
+let gridBorderStartX,gridBorderEndX, gridBorderStartY, gridBorderEndY;
 
-let asteroids = [];
-let speed;
+let asteroids = []; // array for asteroids currently in game
+let speed; // speed of asteroids in general: 3 for easy, 5 for medium, 10 for hard
 
+// const image objects for our images
 const asteroidImage1 = new Image();
 const asteroidImage2 = new Image();
 const explosion = new Image();
 
-// HARD CODED GRIDS
-// correct solution
+// HARD CODED GRIDS AND SOLUTIONS
 let innerEasy1 = [2, 1, 1, 1, 2, 2, 2, 2, 2, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 2, 2, 1, 1, 1, 1];
 let clueEasy1 = {
   rows: [[0, 0, 3],[0, 0, 1],[0, 1, 2],[0, 1, 2],[0, 0, 4]],
   cols: [[0, 0, 1],[1, 1, 1],[0, 1, 2],[0, 1, 3],[0, 2, 1]],
 };
 
-// correct solution
 let innerEasy2 = [1, 1, 2, 1, 2, 1, 1, 1, 2, 2, 2, 2, 1, 2, 1, 2, 1, 1, 1, 1, 2, 2, 1, 1, 1];
 let clueEasy2 = {
   rows: [[0, 2, 1],[0, 0, 3],[0, 1, 1],[0, 0, 4],[0, 0, 3]],
   cols: [[0, 0, 2],[0, 2, 1],[0, 0, 4],[0, 1, 2],[0, 0, 3]],
 };
 
-// correct solution
 let innerEasy3 = [2, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 2, 1, 2, 2, 2, 2, 1, 2, 1, 1, 1, 1, 2, 2];
 let clueEasy3 = {
   rows: [[0, 1, 1],[0, 3, 1],[0, 1, 1],[0, 1, 1],[0, 0, 3]],
   cols: [[0, 2, 1],[0, 2, 1],[0, 0, 4],[0, 0, 1],[0, 1, 1]],
 };
 
-// correct solution
 let innerEasy4 = [1, 2, 1, 2, 2, 1, 2, 2, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1];
 let clueEasy4 = {
   rows: [[0, 1, 1],[0, 1, 1],[0, 0, 4],[0, 1, 3],[0, 1, 2]],
   cols: [[0, 2, 1],[0, 1, 1],[0, 1, 2],[0, 0, 3],[0, 0, 4]],
 };
 
-// correct solution
 let innerEasy5 = [1, 2, 1, 2, 2, 1, 1, 1, 2, 2, 1, 1, 2, 2, 1, 2, 1, 1, 1, 2, 1, 2, 1, 2, 2];
 let clueEasy5 = {
   rows: [[0, 1, 1],[0, 0, 3],[0, 2, 1],[0, 0, 3],[0, 1, 1]],
@@ -76,35 +72,30 @@ const easyGrids = [
   { inner: innerEasy5, clue: clueEasy5 },
 ];
 
-// correct solution
 let innerMedium1 = [1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 2, 2, 2, 2, 1, 1, 2, 1, 1, 1,1, 2, 2, 1, 2, 1, 1, 2, 1, 2, 1, 2, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1];
 let clueMedium1 = {
   rows: [[0, 2, 4],[0, 2, 2],[0, 2, 1],[0, 1, 4],[1, 2, 1],[1, 1, 2],[0, 2, 4]],
   cols: [[1, 2, 1],[0, 3, 3],[0, 1, 1],[0, 1, 4],[2, 2, 1],[2, 1, 2],[1, 1, 3]],
 };
 
-// correct solution
 let innerMedium2 = [1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 2, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 2, 1, 2, 1, 1, 1, 1, 2, 2, 1];
 let clueMedium2 = {
   rows: [[0, 1, 5],[0, 3, 3],[0, 1, 2],[1, 3, 1],[0, 0, 6],[0, 3, 1],[0, 4, 1]],
   cols: [[0, 2, 4],[0, 1, 3],[0, 2, 4],[1, 3, 1],[0, 2, 2],[0, 3, 2],[0, 4, 1]],
 };
 
-// correct solution
 let innerMedium3 = [1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 2, 2, 1, 1, 1, 1, 1, 2, 1, 1, 2, 2, 1, 2, 2, 2, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 2, 2, 1, 1];
 let clueMedium3 = {
   rows: [[0, 4, 2],[0, 3, 3],[0, 1, 2],[0, 5, 1],[0, 1, 1],[0, 0, 5],[0, 2, 2]],
   cols: [[0, 2, 3],[0, 4, 2],[2, 1, 2],[0, 1, 4],[0, 3, 1],[0, 2, 1],[2, 1, 1]],
 };
 
-// correct solution
 let innerMedium4 = [2, 2, 1, 1, 1, 2, 2, 1, 2, 1, 2, 2, 2, 1, 2, 1, 1, 2, 2, 2, 1, 1, 1, 2, 1, 1, 1, 1, 2, 2, 1, 2, 1, 1, 1, 1, 1, 2, 2, 1, 2, 2, 1, 1, 2, 1, 1, 2, 1];
 let clueMedium4 = {
   rows: [[0, 0, 3],[1, 1, 1],[0, 2, 1],[0, 2, 4],[0, 1, 3],[0, 2, 1],[2, 2, 1]],
   cols: [[1, 1, 2],[0, 2, 2],[0, 3, 1],[1, 1, 1],[0, 1, 4],[0, 0, 2],[0, 4, 1]],
 };
 
-// correct solution
 let innerMedium5 = [1, 2, 2, 1, 2, 1, 1, 2, 1, 2, 1, 2, 2, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 2, 2, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 2];
 let clueMedium5 = {
   rows: [[1, 1, 2],[0, 1, 1],[0, 2, 4],[0, 1, 3],[2, 1, 1],[0, 0, 6],[0, 3, 1]],
@@ -119,35 +110,30 @@ const mediumGrids = [
   { inner: innerMedium5, clue: clueMedium5 },
 ];
 
-// correct solution
 let innerHard1 = [2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 2, 2, 1, 1, 1, 2, 2, 1, 1, 1, 2, 2, 1, 1, 1, 1, 2, 1, 1, 1, 2, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 2, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 1, 1, 1, 1, 1, 1, 2, 1, 2, 2, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1];
 let clueHard1 = {
   rows: [[0, 0, 4],[0, 3, 2],[1, 3, 2],[1, 4, 2],[1, 2, 2],[0, 3, 2],[0, 6, 1],[0, 0, 1],[0, 6, 1],[0, 2, 5]],
   cols: [[4, 1, 2],[1, 1, 2],[1, 1, 1],[2, 2, 1],[0, 5, 1],[0, 5, 2],[1, 1, 1],[0, 1, 3],[0, 7, 1],[0, 6, 1]],
 };
 
-// correct solution
 let innerHard2 = [1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 1, 2, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 2, 2, 1, 2, 2, 1, 1, 1, 1, 1, 2, 2, 1, 1, 2, 1, 1, 2, 2, 1];
 let clueHard2 = {
   rows: [[0, 0, 2],[0, 5, 3],[0, 3, 4],[0, 0, 5],[0, 1, 5],[0, 1, 6],[0, 0, 4],[0, 5, 3],[0, 1, 5],[2, 2, 1]],
   cols: [[2, 1, 2],[0, 3, 2],[0, 2, 5],[2, 2, 1],[1, 1, 1],[0, 4, 2],[0, 4, 3],[0, 5, 2],[0, 5, 2],[1, 3, 2]],
 };
 
-// correct solution
 let innerHard3 = [2, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 2, 1, 1, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1, 2, 2, 1, 2, 2, 2, 2, 2, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 1, 1, 2];
 let clueHard3 = {
   rows: [[0, 0, 2],[0, 4, 1],[0, 1, 2],[0, 3, 3],[0, 1, 3],[0, 1, 4],[0, 2, 5],[1, 1, 1],[3, 1, 3],[0, 3, 2]],
   cols: [[1, 4, 1],[1, 1, 2],[0, 1, 2],[0, 1, 2],[0, 0, 1],[2, 1, 1],[0, 2, 2],[2, 4, 2],[1, 4, 2],[0, 1, 6]],
 };
 
-// correct solution
 let innerHard4 = [2, 2, 2, 1, 1, 1, 1, 2, 1, 1, 1, 2, 2, 2, 2, 1, 1, 2, 1, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 1, 2, 1, 1, 1, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1, 2, 1, 1, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 2, 1, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2];
 let clueHard4 = {
   rows: [[0, 4, 2],[1, 2, 2],[0, 2, 4],[0, 2, 3],[0, 3, 1],[0, 1, 2],[0, 0, 2],[0, 0, 4],[0, 6, 1],[0, 0, 2]],
   cols: [[2, 1, 2],[1, 1, 2],[0, 2, 1],[1, 1, 1],[1, 2, 1],[0, 2, 3],[4, 1, 1],[0, 4, 1],[0, 4, 2],[0, 0, 3]],
 };
 
-// correct solution
 let innerHard5 = [2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2];
 let clueHard5 = {
   rows: [[0, 0, 2],[0, 1, 7],[0, 1, 2],[0, 1, 5],[0, 1, 7],[0, 5, 2],[0, 0, 4],[0, 0, 8],[0, 1, 3],[0, 0, 1]],
@@ -162,6 +148,7 @@ const hardGrids = [
   { inner: innerHard5, clue: clueHard5 },
 ];
 
+// class for Grid Object
 class Grid {
   constructor(solution, clues) {
     this.solution = solution;
@@ -169,13 +156,14 @@ class Grid {
     this.stringSolution = JSON.stringify(solution);
   }
 
+  // check whether current grid = solution grid
   checkGrid() {
     // need to fix based on asteroid
     if (JSON.stringify(currentGrid) == this.stringSolution) {
       console.log("Nongram is correct! Win Game");
 
-      asteroids = [];
-      clearInterval(asteroidInterval);
+      asteroids = []; // clear asteroid array
+      clearInterval(asteroidInterval); // set interval to be 0
 
       // fill screen to be green
       ctx.beginPath();
@@ -194,38 +182,19 @@ class Grid {
     }
   }
 
+  // to draw in the grid clues
   drawClues() {
     ctx.fillStyle = "white";
     ctx.font = "18px Arial";
     ctx.textAlign = "left";
     ctx.textBaseline = "top";
 
-    let startX, startY;
-
-    switch (size) {
-      case 5: // Easy
-        startX = 380;
-        startY = 180;
-        break;
-      case 7: // Medium
-        startX = 350;
-        startY = 150;
-        break;
-      case 10: // Hard
-        startX = 305;
-        startY = 105;
-        break;
-      default:
-        startX = 0;
-        startY = 0;
-    }
-
     // draw colClues
     for (let i = 0; i < size; i++) {
       for (let j = 0; j < 3; j++) {
         if (this.clues.cols[i][j] !== 0) {
-          const x = i * 30 + startX + 100;
-          const y = j * 30 + startY + 5;
+          const x = i * 30 + gridBorderStartX + 100;
+          const y = j * 30 + gridBorderStartY + 5;
           ctx.fillText(this.clues.cols[i][j], x, y);
         }
       }
@@ -235,8 +204,8 @@ class Grid {
     for (let i = 0; i < size; i++) {
       for (let j = 0; j < 3; j++) {
         if (this.clues.rows[i][j] !== 0) {
-          const x = j * 30 + startX + 10;
-          const y = i * 30 + startY + 97; // Adjust y-coordinate for row clues
+          const x = j * 30 + gridBorderStartX + 10;
+          const y = i * 30 + gridBorderStartY + 97; // Adjust y-coordinate for row clues
           ctx.fillText(this.clues.rows[i][j], x, y);
         }
       }
@@ -244,28 +213,26 @@ class Grid {
   }
 }
 
+// class for asteroid object
 class Asteroid {
-  constructor(x, y, size, speed, direction, angle, image) {
-    this.x = x;
-    this.y = y;
-    this.size = size;
-    this.speed = speed;
-    this.direction = direction;
-    this.angle = angle;
+  constructor(x, y, speed, direction, angle, image) {
+    this.x = x; // current x location on canvas
+    this.y = y; // current y location on canvas
+    this.speed = speed; // general speed - will affect vx and vy
+    this.direction = direction; // for the general direction
+    this.angle = angle; // for the exact angle
     this.image = image; // Load the image
 
-    // start at x y and go to 500,300
     this.vx = this.speed * Math.cos(angle);
     this.vy = this.speed * Math.sin(angle);
   }
 
   draw() {
-    ctx.drawImage(this.image, this.x, this.y, this.size, this.size);
+    ctx.drawImage(this.image, this.x, this.y, asteroidSize, asteroidSize); // draw asteroid on canvas
   }
 
-  // this is wrong - they only move in one direction for now - they need to move toward the center?
   move() {
-    this.x = this.x + this.vx;
+    this.x = this.x + this.vx; // update location based on vx and vy
     this.y = this.y + this.vy;
   }
 
@@ -274,27 +241,29 @@ class Asteroid {
     let checkXMin = (this.direction == "right") ?  gridBorderStartX - asteroidSize : gridBorderStartX; 
     let checkYMin = (this.direction == "down") ?  gridBorderStartY - asteroidSize : gridBorderStartY; 
 
+    // if asteroid is going to hit the grid
     if (
       this.x  >= checkXMin &&
       this.x <= gridBorderEndX &&
       this.y >= checkYMin &&
       this.y <= gridBorderEndY
     ) {
-      // asteroid hit the center
-
       // Remove the asteroid from the asteroids array
       const index = asteroids.indexOf(this);
       if (index !== -1) {
         asteroids.splice(index, 1);
       }
 
+      // lose a life
       loseLife();
-      console.log("Asteroid Hit at ("+ this.x + ", " + this.y + ") .Lose Life");
+      console.log("Asteroid Hit at ("+ this.x + ", " + this.y + ") . Lose Life");
       return;
     }
+    // draw the asteroid
     this.draw();
   }
 
+  // check if we clicked on an asteroid
   click(){
     if (mouseX >= this.x && mouseX <= this.x + asteroidSize && mouseY >= this.y && mouseY <= this.y + asteroidSize) {
       // Asteroid was clicked
@@ -310,12 +279,13 @@ class Asteroid {
       }
       
       // draw an explosion over where asteroid was
-      ctx.drawImage(explosion, this.x, this.y, this.size, this.size);
+      ctx.drawImage(explosion, this.x, this.y, asteroidSize, asteroidSize);
       console.log("Asteroid clicked at (" + this.x + ", " + this.y + ")");
     }
   }
 }
 
+// draw all the asteroids
 function drawAsteroids() {
   // clear the old asteroids
   ctx.beginPath();
@@ -329,10 +299,12 @@ function drawAsteroids() {
   ctx.fill();
   ctx.stroke();
 
+  // redraw the borders of the grid
   if(size == 5){drawEasy();}
   if(size == 7){drawMedium();}
   if(size == 10){drawHard();}
 
+  // for each asteroid, we move and then check and then maybe draw
   asteroids.forEach((asteroid) => {
     asteroid.move();
     asteroid.check();
@@ -370,20 +342,22 @@ function generateAsteroids() {
   let angle = Math.atan2(300 - y, 500 - x);
 
   const image = Math.random() > 0.5 ? asteroidImage1 : asteroidImage2; // Randomly select an image
-  const asteroid = new Asteroid(x, y, asteroidSize, speed, direction, angle, image);
+  const asteroid = new Asteroid(x, y, speed, direction, angle, image); // create asteroid object
 
-  asteroids.push(asteroid);
+  asteroids.push(asteroid); // push to array
   console.log(
     "asteroid pushed at " + x + " , " + y + " with direction " + direction + " angle: "+ angle);
   drawAsteroids();
 }
 
+// to preload the images
 function preLoad() {
   asteroidImage1.src = "/images/asteroid1.png";
   asteroidImage2.src = "/images/asteroid2.png";
   explosion.src = "/images/explosion.png";
 }
 
+// to draw the countdown
 function drawCountdown(count) {
   ctx.rect(0, 0, 1000, 600);
   ctx.fillStyle = "purple";
@@ -396,6 +370,7 @@ function drawCountdown(count) {
   ctx.fillText(count, canvas.width / 2, canvas.height / 2);
 }
 
+// to do the countdown to home screen
 function countdown() {
   count--;
   drawCountdown(count);
@@ -409,12 +384,13 @@ function countdown() {
   }
 }
 
+// on window load
 $(() => {
   // Extract difficulty level from URL
   const urlParams = new URLSearchParams(window.location.search);
   const difficulty = urlParams.get("difficulty");
 
-  preLoad();
+  preLoad(); // preload images
 
   // fill canvas
   ctx.rect(0, 0, 1000, 600);
@@ -428,10 +404,11 @@ $(() => {
       drawEasy(); // Call the appropriate drawing function based on difficulty level
       size = 5; // set size of grid
       asteroidSize = 50; // Set the initial size of each asteroid
-      lives = 5;
+      lives = 5; // set lives
 
-      asteroidInterval = setInterval(generateAsteroids, 5000); // Generate asteroids every 7 seconds
+      asteroidInterval = setInterval(generateAsteroids, 5000); // Generate asteroids every 5 seconds
 
+      // set the grid border coordinates
       gridBorderStartX = 380;
       gridBorderEndX = 620;
       gridBorderStartY = 180;
@@ -447,14 +424,16 @@ $(() => {
       grid = new Grid(inner, clue);
       grid.drawClues();
 
+      // set the inside of grid coordinates
       startGridX = 470;
       endGridX = 620;
       startGridY = 270;
       endGridY = 420;
 
       currentGrid = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-      console.log("Easy ", randomIndex + 1);
+      console.log("Level: Easy ", randomIndex + 1); // log which level
       break;
+
     case "medium":
       drawMedium();
       size = 7;
@@ -462,8 +441,7 @@ $(() => {
       asteroidSize = 40;
       lives = 4;
       
-      // every 3 seconds make a new asteroid
-      asteroidInterval = setInterval(generateAsteroids, 4000); // Generate asteroids every 3 seconds
+      asteroidInterval = setInterval(generateAsteroids, 4000); // Generate asteroids every 4 seconds
       
       gridBorderStartX = 350;
       gridBorderEndX = 650;
@@ -484,8 +462,9 @@ $(() => {
       endGridY = 450;
 
       currentGrid = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-      console.log("Medium ", randomIndex + 1);
+      console.log("Level: Medium ", randomIndex + 1);
       break;
+
     case "hard":
       drawHard();
       size = 10;
@@ -493,8 +472,7 @@ $(() => {
       asteroidSize = 30;
       lives = 3;
 
-      // every 2 seconds make a new asteroid  -will change for difficulty
-      asteroidInterval = setInterval(generateAsteroids, 3000); // Generate asteroids every 2 seconds
+      asteroidInterval = setInterval(generateAsteroids, 2000); // Generate asteroids every 2 seconds
 
       gridBorderStartX = 305;
       gridBorderEndX = 695;
@@ -521,11 +499,8 @@ $(() => {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0,
       ];
-      console.log("Hard ", randomIndex + 1);
+      console.log("Level: Hard ", randomIndex + 1);
       break;
-    default:
-      // Handle invalid difficulty level or default to easy
-      drawEasy();
   }
     // Update the menu bar <h2> to display the new lives count
     livesText = document.getElementById("lives");
@@ -638,14 +613,15 @@ canvas.oncontextmenu = function (e) {
   e.preventDefault();
 };
 
+// when we mousedown - over the grid or not over the grid
 $("#gameCanvas").mousedown((e) => {
   getMousePos(e);
   if (mouseX > startGridX && mouseX < endGridX && mouseY > startGridY && mouseY < endGridY) { // over the grid
-    let selectedCol = Math.floor((mouseX - startGridX) / 30);
-    let selectedRow = Math.floor((mouseY - startGridY) / 30);
+    let selectedCol = Math.floor((mouseX - startGridX) / 30); // find selected column
+    let selectedRow = Math.floor((mouseY - startGridY) / 30); // find selected row
     if (e.which == 1) {
       // left click - set block to white
-      if (currentGrid[(selectedCol % size) + selectedRow * size] == 1) {
+      if (currentGrid[(selectedCol % size) + selectedRow * size] == 1) { // if its already white set to black
         currentGrid[(selectedCol % size) + selectedRow * size] = 0;
         drawSquare(selectedRow, selectedCol, "black");
       } else {
@@ -654,7 +630,7 @@ $("#gameCanvas").mousedown((e) => {
       }
     } else if (e.which == 3) {
       // right click - set block to purple
-      if (currentGrid[(selectedCol % size) + selectedRow * size] == 2) {
+      if (currentGrid[(selectedCol % size) + selectedRow * size] == 2) { // if its already purple set to black
         currentGrid[(selectedCol % size) + selectedRow * size] = 0;
         drawSquare(selectedRow, selectedCol, "black");
       } else {
@@ -664,7 +640,7 @@ $("#gameCanvas").mousedown((e) => {
     }
     // console.log(currentGrid);
     // console.log(grid.solution);
-    grid.checkGrid();
+    grid.checkGrid(); // check if solved
   }
   
   // NOT OVER THE GRID - check if click asteroid
@@ -689,6 +665,7 @@ function getMousePos(evt) {
   mouseY = evt.clientY - rect.top;
 }
 
+// when we lose a life
 function loseLife() {
   lives--; // Decrease the lives count
 
@@ -708,7 +685,7 @@ function loseLife() {
     ctx.fillStyle = "red";
     ctx.fill();
 
-    // display you win
+    // display you lose
     ctx.font = "80px Arial";
     ctx.fillStyle = "white";
     ctx.textAlign = "center";
