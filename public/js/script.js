@@ -184,13 +184,15 @@ class Grid {
       ctx.rect(0, 0, 1000, 600);
       ctx.fillStyle = "green";
       ctx.fill();
-      ctx.stroke();
-      // maybe add countdown animation and confetti?
 
-      // Wait for 5 seconds before redirecting to index.html
-      setTimeout(function () {
-        window.location.href = "index.html";
-      }, 5000);
+      // display you win
+      ctx.font = "80px Arial";
+      ctx.fillStyle = "white";
+      ctx.textAlign = "center";
+      ctx.fillText("You Win", canvas.width / 2, canvas.height / 2 - 50);
+
+      // Start countdown from 3
+      setTimeout(countdown, 2000); // Call countdown after 2 second
     }
   }
 
@@ -377,6 +379,32 @@ function preLoad() {
   asteroidImage1.src = "/images/asteroid1.png";
   asteroidImage2.src = "/images/asteroid2.png";
   explosion.src = "/images/explosion.png";
+}
+
+function drawCountdown(count) {
+  ctx.rect(0, 0, 1000, 600);
+  ctx.fillStyle = "purple";
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.font = "80px Arial";
+  ctx.fillStyle = "white";
+  ctx.textAlign = "center";
+  ctx.fillText(count, canvas.width / 2, canvas.height / 2);
+}
+
+let count = 4;
+function countdown() {
+  count--;
+  drawCountdown(count);
+  if (count > 1) {
+    setTimeout(countdown, 1000); // Call countdown again after 1 second
+  } else {
+    // Redirect to index.html after countdown completes
+    setTimeout(function () {
+      window.location.href = "index.html";
+    }, 1000);
+  }
 }
 
 $(() => {
@@ -668,16 +696,21 @@ function loseLife() {
 
   // If lives reach 0, change the screen to red and return home after 5 seconds
   if (lives === 0) {
-    asteroids = []; // clear the asteroids from array so they dont keep drawing and moving
-    setInterval(generateAsteroids, 10000); // Stop Generating
+    setInterval(generateAsteroids, 20000); // Stop Generating
 
-    ctx.beginPath();
-    ctx.rect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "red";
-    ctx.fill();
+      // fill screen to be green
+      ctx.beginPath();
+      ctx.rect(0, 0, 1000, 600);
+      ctx.fillStyle = "red";
+      ctx.fill();
 
-    setTimeout(() => {
-      window.location.href = "index.html"; // Redirect to index.html after 5 seconds
-    }, 5000); // 5000 milliseconds = 5 seconds
+      // display you win
+      ctx.font = "80px Arial";
+      ctx.fillStyle = "white";
+      ctx.textAlign = "center";
+      ctx.fillText("You Lose", canvas.width / 2, canvas.height / 2 - 50);
+
+      // Start countdown from 3
+      setTimeout(countdown, 2000); // Call countdown after 2 second
   }
 }
