@@ -241,17 +241,18 @@ class Grid {
 }
 
 class Asteroid {
-  constructor(x, y, size, speed, direction, image) {
+  constructor(x, y, size, speed, direction, angle, image) {
     this.x = x;
     this.y = y;
     this.size = size;
     this.speed = speed;
     this.direction = direction;
+    this.angle = angle;
     this.image = image; // Load the image
 
     // start at x y and go to 500,300
-    this.vx = this.speed * Math.cos(direction);
-    this.vy = this.speed * Math.sin(direction);
+    this.vx = this.speed * Math.cos(angle);
+    this.vy = this.speed * Math.sin(angle);
   }
 
   draw() {
@@ -265,10 +266,14 @@ class Asteroid {
   }
 
   check() {
+    // depending on this.direction add padding
+    let checkXMin = (this.direction == "right") ?  gridBorderStartX - 30 : gridBorderStartX; 
+    let checkYMin = (this.direction == "down") ?  gridBorderStartY - 30 : gridBorderStartY; 
+
     if (
-      this.x  >= gridBorderStartX &&
+      this.x  >= checkXMin &&
       this.x <= gridBorderEndX &&
-      this.y >= gridBorderStartY &&
+      this.y >= checkYMin &&
       this.y <= gridBorderEndY
     ) {
       // asteroid hit the center
@@ -280,8 +285,10 @@ class Asteroid {
       }
 
       loseLife();
-      console.log("Asteroid Hit. Lose Life");
+      console.log("Asteroid Hit at ("+ this.x + ", " + this.y + ") .Lose Life");
+      return;
     }
+    this.draw();
   }
 }
 
@@ -305,30 +312,33 @@ function drawAsteroids() {
   asteroids.forEach((asteroid) => {
     asteroid.move();
     asteroid.check();
-    asteroid.draw();
   });
 }
 
 // to generate a new asteroid
 function generateAsteroids() {
   const edge = Math.floor(Math.random() * 4); // Randomly select one of the four edges
-  let x, y;
+  let x, y, direction;
   switch (edge) {
     case 0: // Top edge
-      x = Math.random() * canvas.width;
+      x = Math.floor(Math.random() * canvas.width);
       y = 0;
+      direction = "down";
       break;
     case 1: // Right edge
       x = canvas.width;
-      y = Math.random() * canvas.height;
+      y = Math.floor(Math.random() * canvas.height);
+      direction = "left";
       break;
     case 2: // Bottom edge
-      x = Math.random() * canvas.width;
+      x = Math.floor(Math.random() * canvas.width);
       y = canvas.height;
+      direction = "up";
       break;
     case 3: // Left edge
       x = 0;
-      y = Math.random() * canvas.height;
+      y = Math.floor(Math.random() * canvas.height);
+      direction = "right";
       break;
   }
 
@@ -337,12 +347,11 @@ function generateAsteroids() {
 
   aSize = 30;
   const image = Math.random() > 0.5 ? asteroidImage1 : asteroidImage2; // Randomly select an image
-  const asteroid = new Asteroid(x, y, aSize, speed, angle, image);
+  const asteroid = new Asteroid(x, y, aSize, speed, direction, angle, image);
 
   asteroids.push(asteroid);
   console.log(
-    "asteroid pushed at " + x + " , " + y + " with direction " + angle
-  );
+    "asteroid pushed at " + x + " , " + y + " with direction " + direction + " angle: "+ angle);
   drawAsteroids();
 }
 
@@ -629,6 +638,8 @@ function loseLife() {
     ctx.rect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = "red";
     ctx.fill();
+
+    asteroids = []; // clear the asteroids from array so they dont keep drawing and moving
 
     setTimeout(() => {
       window.location.href = "index.html"; // Redirect to index.html after 5 seconds
