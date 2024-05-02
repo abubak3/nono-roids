@@ -10,9 +10,10 @@ const ctx = canvas.getContext("2d");
 /**
  * Globals!
  */
-let lives = 3;
+let lives;
 let currentGrid;
 let grid, size;
+let asteroidSize;
 
 // mouse positions
 let x, y;
@@ -267,8 +268,8 @@ class Asteroid {
 
   check() {
     // depending on this.direction add padding
-    let checkXMin = (this.direction == "right") ?  gridBorderStartX - 30 : gridBorderStartX; 
-    let checkYMin = (this.direction == "down") ?  gridBorderStartY - 30 : gridBorderStartY; 
+    let checkXMin = (this.direction == "right") ?  gridBorderStartX - asteroidSize : gridBorderStartX; 
+    let checkYMin = (this.direction == "down") ?  gridBorderStartY - asteroidSize : gridBorderStartY; 
 
     if (
       this.x  >= checkXMin &&
@@ -345,9 +346,8 @@ function generateAsteroids() {
   // Calculate the angle between (x, y) and (500, 300)
   let angle = Math.atan2(300 - y, 500 - x);
 
-  aSize = 30;
   const image = Math.random() > 0.5 ? asteroidImage1 : asteroidImage2; // Randomly select an image
-  const asteroid = new Asteroid(x, y, aSize, speed, direction, angle, image);
+  const asteroid = new Asteroid(x, y, asteroidSize, speed, direction, angle, image);
 
   asteroids.push(asteroid);
   console.log(
@@ -377,6 +377,8 @@ $(() => {
       speed = 3; // set speed of asteroids
       drawEasy(); // Call the appropriate drawing function based on difficulty level
       size = 5; // set size of grid
+      asteroidSize = 50; // Set the initial size of each asteroid
+      lives = 5;
 
       setInterval(generateAsteroids, 7000); // Generate asteroids every 7 seconds
 
@@ -407,7 +409,9 @@ $(() => {
       drawMedium();
       size = 7;
       speed = 5;
-
+      asteroidSize = 40;
+      lives = 4;
+      
       // every 3 seconds make a new asteroid
       setInterval(generateAsteroids, 5000); // Generate asteroids every 3 seconds
       
@@ -436,6 +440,8 @@ $(() => {
       drawHard();
       size = 10;
       speed = 10;
+      asteroidSize = 30;
+      lives = 3;
 
       // every 2 seconds make a new asteroid  -will change for difficulty
       setInterval(generateAsteroids, 3000); // Generate asteroids every 2 seconds
@@ -471,6 +477,9 @@ $(() => {
       // Handle invalid difficulty level or default to easy
       drawEasy();
   }
+    // Update the menu bar <h2> to display the new lives count
+    livesText = document.getElementById("lives");
+    livesText.innerText = "Lives: " + lives;
 });
 
 // for easy we need to start at (380,180)
