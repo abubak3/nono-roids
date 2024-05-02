@@ -10,6 +10,7 @@ const ctx = canvas.getContext("2d");
 /**
  * Globals!
  */
+let lives = 3;
 let currentGrid;
 let grid, size;
 
@@ -17,7 +18,14 @@ let grid, size;
 let x, y;
 let startGridX, endGridX, startGridY, endGridY;
 
-const asteroids = [];
+// gborders
+let gridBorderStartX,gridBorderEndX, gridBorderStartY, griBorderEndY;
+
+let asteroids = [];
+let speed = 0;
+
+const asteroidImage1 = new Image();
+const asteroidImage2 = new Image();
 
 // HARD CODED GRIDS
 // correct solution
@@ -25,104 +33,36 @@ let innerEasy1 = [
   2, 1, 1, 1, 2, 2, 2, 2, 2, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 2, 2, 1, 1, 1, 1,
 ];
 let clueEasy1 = {
-  rows: [
-    [0, 0, 3],
-    [0, 0, 1],
-    [0, 1, 2],
-    [0, 1, 2],
-    [0, 0, 4],
-  ],
-  cols: [
-    [0, 0, 1],
-    [1, 1, 1],
-    [0, 1, 2],
-    [0, 1, 3],
-    [0, 2, 1],
-  ],
+  rows: [[0, 0, 3],[0, 0, 1],[0, 1, 2],[0, 1, 2],[0, 0, 4],],
+  cols: [[0, 0, 1],[1, 1, 1],[0, 1, 2],[0, 1, 3],[0, 2, 1],],
 };
 
 // correct solution
-let innerEasy2 = [
-  1, 1, 2, 1, 2, 1, 1, 1, 2, 2, 2, 2, 1, 2, 1, 2, 1, 1, 1, 1, 2, 2, 1, 1, 1,
-];
+let innerEasy2 = [1, 1, 2, 1, 2, 1, 1, 1, 2, 2, 2, 2, 1, 2, 1, 2, 1, 1, 1, 1, 2, 2, 1, 1, 1,];
 let clueEasy2 = {
-  rows: [
-    [0, 2, 1],
-    [0, 0, 3],
-    [0, 1, 1],
-    [0, 0, 4],
-    [0, 0, 3],
-  ],
-  cols: [
-    [0, 0, 2],
-    [0, 2, 1],
-    [0, 0, 4],
-    [0, 1, 2],
-    [0, 0, 3],
-  ],
+  rows: [[0, 2, 1],[0, 0, 3],[0, 1, 1],[0, 0, 4],[0, 0, 3]],
+  cols: [[0, 0, 2],[0, 2, 1],[0, 0, 4],[0, 1, 2],[0, 0, 3],],
 };
 
 // correct solution
-let innerEasy3 = [
-  2, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 2, 1, 2, 2, 2, 2, 1, 2, 1, 1, 1, 1, 2, 2,
-];
+let innerEasy3 = [2, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 2, 1, 2, 2, 2, 2, 1, 2, 1, 1, 1, 1, 2, 2,];
 let clueEasy3 = {
-  rows: [
-    [0, 1, 1],
-    [0, 3, 1],
-    [0, 1, 1],
-    [0, 1, 1],
-    [0, 0, 3],
-  ],
-  cols: [
-    [0, 2, 1],
-    [0, 2, 1],
-    [0, 0, 4],
-    [0, 0, 1],
-    [0, 1, 1],
-  ],
+  rows: [[0, 1, 1],[0, 3, 1],[0, 1, 1],[0, 1, 1],[0, 0, 3]],
+  cols: [[0, 2, 1],[0, 2, 1],[0, 0, 4],[0, 0, 1],[0, 1, 1]],
 };
 
 // correct solution
-let innerEasy4 = [
-  1, 2, 1, 2, 2, 1, 2, 2, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1,
-];
+let innerEasy4 = [1, 2, 1, 2, 2, 1, 2, 2, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1];
 let clueEasy4 = {
-  rows: [
-    [0, 1, 1],
-    [0, 1, 1],
-    [0, 0, 4],
-    [0, 1, 3],
-    [0, 1, 2],
-  ],
-  cols: [
-    [0, 2, 1],
-    [0, 1, 1],
-    [0, 1, 2],
-    [0, 0, 3],
-    [0, 0, 4],
-  ],
+  rows: [[0, 1, 1],[0, 1, 1],[0, 0, 4],[0, 1, 3],[0, 1, 2]],
+  cols: [[0, 2, 1],[0, 1, 1],[0, 1, 2],[0, 0, 3],[0, 0, 4]],
 };
 
 // correct solution
-let innerEasy5 = [
-  1, 2, 1, 2, 2, 1, 1, 1, 2, 2, 1, 1, 2, 2, 1, 2, 1, 1, 1, 2, 1, 2, 1, 2, 2,
-];
+let innerEasy5 = [1, 2, 1, 2, 2, 1, 1, 1, 2, 2, 1, 1, 2, 2, 1, 2, 1, 1, 1, 2, 1, 2, 1, 2, 2];
 let clueEasy5 = {
-  rows: [
-    [0, 1, 1],
-    [0, 0, 3],
-    [0, 2, 1],
-    [0, 0, 3],
-    [0, 1, 1],
-  ],
-  cols: [
-    [0, 3, 1],
-    [0, 0, 3],
-    [0, 2, 2],
-    [0, 0, 1],
-    [0, 0, 1],
-  ],
+  rows: [[0, 1, 1],[0, 0, 3],[0, 2, 1],[0, 0, 3],[0, 1, 1]],
+  cols: [[0, 3, 1],[0, 0, 3],[0, 2, 2],[0, 0, 1],[0, 0, 1]],
 };
 
 const easyGrids = [
@@ -134,133 +74,38 @@ const easyGrids = [
 ];
 
 // correct solution
-let innerMedium1 = [
-  1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 2, 2, 2, 2, 1, 1, 2, 1, 1, 1,
-  1, 2, 2, 1, 2, 1, 1, 2, 1, 2, 1, 2, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1,
-];
+let innerMedium1 = [1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 2, 2, 2, 2, 1, 1, 2, 1, 1, 1,1, 2, 2, 1, 2, 1, 1, 2, 1, 2, 1, 2, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1,];
 let clueMedium1 = {
-  rows: [
-    [0, 2, 4],
-    [0, 2, 2],
-    [0, 2, 1],
-    [0, 1, 4],
-    [1, 2, 1],
-    [1, 1, 2],
-    [0, 2, 4],
-  ],
-  cols: [
-    [1, 2, 1],
-    [0, 3, 3],
-    [0, 1, 1],
-    [0, 1, 4],
-    [2, 2, 1],
-    [2, 1, 2],
-    [1, 1, 3],
-  ],
+  rows: [[0, 2, 4],[0, 2, 2],[0, 2, 1],[0, 1, 4],[1, 2, 1],[1, 1, 2],[0, 2, 4]],
+  cols: [[1, 2, 1],[0, 3, 3],[0, 1, 1],[0, 1, 4],[2, 2, 1],[2, 1, 2],[1, 1, 3]],
 };
 
 // correct solution
-let innerMedium2 = [
-  1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 2, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1,
-  2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 2, 1, 2, 1, 1, 1, 1, 2, 2, 1,
-];
+let innerMedium2 = [1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 2, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 2, 1, 2, 1, 1, 1, 1, 2, 2, 1];
 let clueMedium2 = {
-  rows: [
-    [0, 1, 5],
-    [0, 3, 3],
-    [0, 1, 2],
-    [1, 3, 1],
-    [0, 0, 6],
-    [0, 3, 1],
-    [0, 4, 1],
-  ],
-  cols: [
-    [0, 2, 4],
-    [0, 1, 3],
-    [0, 2, 4],
-    [1, 3, 1],
-    [0, 2, 2],
-    [0, 3, 2],
-    [0, 4, 1],
-  ],
+  rows: [[0, 1, 5],[0, 3, 3],[0, 1, 2],[1, 3, 1],[0, 0, 6],[0, 3, 1],[0, 4, 1]],
+  cols: [[0, 2, 4],[0, 1, 3],[0, 2, 4],[1, 3, 1],[0, 2, 2],[0, 3, 2],[0, 4, 1]],
 };
 
 // correct solution
-let innerMedium3 = [
-  1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 2, 2, 1, 1, 1, 1, 1,
-  2, 1, 1, 2, 2, 1, 2, 2, 2, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 2, 2, 1, 1,
-];
+let innerMedium3 = [1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 2, 2, 1, 1, 1, 1, 1, 2, 1, 1, 2, 2, 1, 2, 2, 2, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 2, 2, 1, 1];
 let clueMedium3 = {
-  rows: [
-    [0, 4, 2],
-    [0, 3, 3],
-    [0, 1, 2],
-    [0, 5, 1],
-    [0, 1, 1],
-    [0, 0, 5],
-    [0, 2, 2],
-  ],
-  cols: [
-    [0, 2, 3],
-    [0, 4, 2],
-    [2, 1, 2],
-    [0, 1, 4],
-    [0, 3, 1],
-    [0, 2, 1],
-    [2, 1, 1],
-  ],
+  rows: [[0, 4, 2],[0, 3, 3],[0, 1, 2],[0, 5, 1],[0, 1, 1],[0, 0, 5],[0, 2, 2]],
+  cols: [[0, 2, 3],[0, 4, 2],[2, 1, 2],[0, 1, 4],[0, 3, 1],[0, 2, 1],[2, 1, 1]],
 };
 
 // correct solution
-let innerMedium4 = [
-  2, 2, 1, 1, 1, 2, 2, 1, 2, 1, 2, 2, 2, 1, 2, 1, 1, 2, 2, 2, 1, 1, 1, 2, 1, 1,
-  1, 1, 2, 2, 1, 2, 1, 1, 1, 1, 1, 2, 2, 1, 2, 2, 1, 1, 2, 1, 1, 2, 1,
-];
+let innerMedium4 = [2, 2, 1, 1, 1, 2, 2, 1, 2, 1, 2, 2, 2, 1, 2, 1, 1, 2, 2, 2, 1, 1, 1, 2, 1, 1, 1, 1, 2, 2, 1, 2, 1, 1, 1, 1, 1, 2, 2, 1, 2, 2, 1, 1, 2, 1, 1, 2, 1];
 let clueMedium4 = {
-  rows: [
-    [0, 0, 3],
-    [1, 1, 1],
-    [0, 2, 1],
-    [0, 2, 4],
-    [0, 1, 3],
-    [0, 2, 1],
-    [2, 2, 1],
-  ],
-  cols: [
-    [1, 1, 2],
-    [0, 2, 2],
-    [0, 3, 1],
-    [1, 1, 1],
-    [0, 1, 4],
-    [0, 0, 2],
-    [0, 4, 1],
-  ],
+  rows: [[0, 0, 3],[1, 1, 1],[0, 2, 1],[0, 2, 4],[0, 1, 3],[0, 2, 1],[2, 2, 1]],
+  cols: [[1, 1, 2],[0, 2, 2],[0, 3, 1],[1, 1, 1],[0, 1, 4],[0, 0, 2],[0, 4, 1]],
 };
 
 // correct solution
-let innerMedium5 = [
-  1, 2, 2, 1, 2, 1, 1, 2, 1, 2, 1, 2, 2, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2, 2, 2, 1,
-  1, 1, 1, 1, 2, 2, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 2,
-];
+let innerMedium5 = [1, 2, 2, 1, 2, 1, 1, 2, 1, 2, 1, 2, 2, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 2, 2, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 2];
 let clueMedium5 = {
-  rows: [
-    [1, 1, 2],
-    [0, 1, 1],
-    [0, 2, 4],
-    [0, 1, 3],
-    [2, 1, 1],
-    [0, 0, 6],
-    [0, 3, 1],
-  ],
-  cols: [
-    [1, 3, 1],
-    [0, 2, 3],
-    [0, 0, 2],
-    [0, 3, 1],
-    [0, 0, 4],
-    [1, 2, 2],
-    [0, 1, 4],
-  ],
+  rows: [[1, 1, 2],[0, 1, 1],[0, 2, 4],[0, 1, 3],[2, 1, 1],[0, 0, 6],[0, 3, 1]],
+  cols: [[1, 3, 1],[0, 2, 3],[0, 0, 2],[0, 3, 1],[0, 0, 4],[1, 2, 2],[0, 1, 4]],
 };
 
 const mediumGrids = [
@@ -272,173 +117,42 @@ const mediumGrids = [
 ];
 
 // correct solution
-let innerHard1 = [
-  2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 2, 2, 1, 1, 1,
-  2, 2, 1, 1, 1, 2, 2, 1, 1, 1, 1, 2, 1, 1, 1, 2, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2,
-  2, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1,
-  2, 2, 1, 1, 1, 1, 1, 1, 2, 1, 2, 2, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1,
-];
+let innerHard1 = [2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 2, 2, 1, 1, 1, 2, 2, 1, 1, 1, 2, 2, 1, 1, 1, 1, 2, 1, 1, 1, 2, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 2, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 1, 1, 1, 1, 1, 1, 2, 1, 2, 2, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1];
 let clueHard1 = {
-  rows: [
-    [0, 0, 4],
-    [0, 3, 2],
-    [1, 3, 2],
-    [1, 4, 2],
-    [1, 2, 2],
-    [0, 3, 2],
-    [0, 6, 1],
-    [0, 0, 1],
-    [0, 6, 1],
-    [0, 2, 5],
-  ],
-  cols: [
-    [4, 1, 2],
-    [1, 1, 2],
-    [1, 1, 1],
-    [2, 2, 1],
-    [0, 5, 1],
-    [0, 5, 2],
-    [1, 1, 1],
-    [0, 1, 3],
-    [0, 7, 1],
-    [0, 6, 1],
-  ],
+  rows: [[0, 0, 4],[0, 3, 2],[1, 3, 2],[1, 4, 2],[1, 2, 2],[0, 3, 2],[0, 6, 1],[0, 0, 1],[0, 6, 1],[0, 2, 5]],
+  cols: [[4, 1, 2],[1, 1, 2],[1, 1, 1],[2, 2, 1],[0, 5, 1],[0, 5, 2],[1, 1, 1],[0, 1, 3],[0, 7, 1],[0, 6, 1]],
 };
 
 // correct solution
-let innerHard2 = [
-  1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1,
-  1, 1, 1, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 1, 2, 2,
-  1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 2, 1, 1,
-  1, 2, 2, 2, 1, 2, 2, 1, 1, 1, 1, 1, 2, 2, 1, 1, 2, 1, 1, 2, 2, 1,
-];
+let innerHard2 = [1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 1, 2, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 2, 2, 1, 2, 2, 1, 1, 1, 1, 1, 2, 2, 1, 1, 2, 1, 1, 2, 2, 1];
 let clueHard2 = {
-  rows: [
-    [0, 0, 2],
-    [0, 5, 3],
-    [0, 3, 4],
-    [0, 0, 5],
-    [0, 1, 5],
-    [0, 1, 6],
-    [0, 0, 4],
-    [0, 5, 3],
-    [0, 1, 5],
-    [2, 2, 1],
-  ],
-  cols: [
-    [2, 1, 2],
-    [0, 3, 2],
-    [0, 2, 5],
-    [2, 2, 1],
-    [1, 1, 1],
-    [0, 4, 2],
-    [0, 4, 3],
-    [0, 5, 2],
-    [0, 5, 2],
-    [1, 3, 2],
-  ],
+  rows: [[0, 0, 2],[0, 5, 3],[0, 3, 4],[0, 0, 5],[0, 1, 5],[0, 1, 6],[0, 0, 4],[0, 5, 3],[0, 1, 5],[2, 2, 1]],
+  cols: [[2, 1, 2],[0, 3, 2],[0, 2, 5],[2, 2, 1],[1, 1, 1],[0, 4, 2],[0, 4, 3],[0, 5, 2],[0, 5, 2],[1, 3, 2]],
 };
 
 // correct solution
 let innerHard3 = [
-  2, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 2, 1, 1, 2, 2, 2, 2, 1,
-  1, 2, 2, 2, 2, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 2,
-  2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1, 2, 2, 1, 2, 2, 2, 2,
-  2, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 1, 1, 2,
-];
+  2, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 2, 1, 1, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1, 2, 2, 1, 2, 2, 2, 2, 2, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 1, 1, 2];
 let clueHard3 = {
-  rows: [
-    [0, 0, 2],
-    [0, 4, 1],
-    [0, 1, 2],
-    [0, 3, 3],
-    [0, 1, 3],
-    [0, 1, 4],
-    [0, 2, 5],
-    [1, 1, 1],
-    [3, 1, 3],
-    [0, 3, 2],
-  ],
-  cols: [
-    [1, 4, 1],
-    [1, 1, 2],
-    [0, 1, 2],
-    [0, 1, 2],
-    [0, 0, 1],
-    [2, 1, 1],
-    [0, 2, 2],
-    [2, 4, 2],
-    [1, 4, 2],
-    [0, 1, 6],
-  ],
+  rows: [[0, 0, 2],[0, 4, 1],[0, 1, 2],[0, 3, 3],[0, 1, 3],[0, 1, 4],[0, 2, 5],[1, 1, 1],[3, 1, 3],[0, 3, 2]],
+  cols: [[1, 4, 1],[1, 1, 2],[0, 1, 2],[0, 1, 2],[0, 0, 1],[2, 1, 1],[0, 2, 2],[2, 4, 2], [1, 4, 2],[0, 1, 6]],
 };
 
 // correct solution
 let innerHard4 = [
-  2, 2, 2, 1, 1, 1, 1, 2, 1, 1, 1, 2, 2, 2, 2, 1, 1, 2, 1, 1, 1, 1, 2, 2, 2, 2,
-  1, 1, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 1, 2, 1, 1, 1, 2, 2, 2, 2, 1, 2, 2, 2, 2,
-  2, 2, 1, 2, 1, 1, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1,
-  1, 2, 1, 1, 1, 1, 1, 1, 2, 2, 1, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2,
-];
+  2, 2, 2, 1, 1, 1, 1, 2, 1, 1, 1, 2, 2, 2, 2, 1, 1, 2, 1, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 1, 2, 1, 1, 1, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1, 2, 1, 1, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 2, 1, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2];
 let clueHard4 = {
   rows: [
-    [0, 4, 2],
-    [1, 2, 2],
-    [0, 2, 4],
-    [0, 2, 3],
-    [0, 3, 1],
-    [0, 1, 2],
-    [0, 0, 2],
-    [0, 0, 4],
-    [0, 6, 1],
-    [0, 0, 2],
-  ],
-  cols: [
-    [2, 1, 2],
-    [1, 1, 2],
-    [0, 2, 1],
-    [1, 1, 1],
-    [1, 2, 1],
-    [0, 2, 3],
-    [4, 1, 1],
-    [0, 4, 1],
-    [0, 4, 2],
-    [0, 0, 3],
-  ],
+    [0, 4, 2],[1, 2, 2],[0, 2, 4],[0, 2, 3], [0, 3, 1], [0, 1, 2],[0, 0, 2],[0, 0, 4],[0, 6, 1],[0, 0, 2]],
+  cols: [[2, 1, 2],[1, 1, 2],[0, 2, 1],[1, 1, 1],[1, 2, 1],[0, 2, 3],[4, 1, 1],[0, 4, 1],[0, 4, 2],[0, 0, 3]],
 };
 
 // correct solution
 let innerHard5 = [
-  2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2,
-  2, 2, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-  1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1,
-  1, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-];
+  2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2];
 let clueHard5 = {
-  rows: [
-    [0, 0, 2],
-    [0, 1, 7],
-    [0, 1, 2],
-    [0, 1, 5],
-    [0, 1, 7],
-    [0, 5, 2],
-    [0, 0, 4],
-    [0, 0, 8],
-    [0, 1, 3],
-    [0, 0, 1],
-  ],
-  cols: [
-    [0, 6, 2],
-    [0, 0, 2],
-    [0, 1, 3],
-    [0, 2, 4],
-    [1, 2, 1],
-    [1, 2, 1],
-    [1, 2, 2],
-    [1, 2, 2],
-    [0, 5, 2],
-    [0, 5, 1],
-  ],
+  rows: [[0, 0, 2],[0, 1, 7],[0, 1, 2],[0, 1, 5],[0, 1, 7],[0, 5, 2],[0, 0, 4],[0, 0, 8],[0, 1, 3],[0, 0, 1]],
+  cols: [[0, 6, 2],[0, 0, 2],[0, 1, 3],[0, 2, 4],[1, 2, 1],[1, 2, 1],[1, 2, 2],[1, 2, 2],[0, 5, 2],[0, 5, 1]],
 };
 
 const hardGrids = [
@@ -457,6 +171,7 @@ class Grid {
   }
 
   checkGrid() {
+    // need to fix based on asteroid
     if (JSON.stringify(currentGrid) == this.stringSolution) {
       console.log("nongram is correct!");
 
@@ -531,7 +246,7 @@ class Asteroid {
     this.y = y;
     this.size = size;
     this.speed = speed;
-    this.direction = direction; // 
+    this.direction = direction;
     this.image = image; // Load the image
 
     // start at x y and go to 500,300
@@ -548,58 +263,49 @@ class Asteroid {
     this.x = this.x + this.vx;
     this.y = this.y + this.vy;
   }
+
+  check() {
+    if (
+      this.x  >= gridBorderStartX &&
+      this.x <= gridBorderEndX &&
+      this.y >= gridBorderStartY &&
+      this.y <= gridBorderEndY
+    ) {
+      // asteroid hit the center
+
+      // Remove the asteroid from the asteroids array
+      const index = asteroids.indexOf(this);
+      if (index !== -1) {
+        asteroids.splice(index, 1);
+      }
+
+      loseLife();
+      console.log("Asteroid Hit. Lose Life");
+    }
+  }
 }
 
 function drawAsteroids() {
   // clear the old asteroids
-  switch (size) {
-    case 5: // Easy
-      ctx.beginPath();
-      ctx.fillStyle = "black";
-      ctx.strokeStyle = "black";
+  ctx.beginPath();
+  ctx.fillStyle = "black";
+  ctx.strokeStyle = "black";
 
-      ctx.rect(0, 0, 1000, 180);
-      ctx.rect(0, 0, 380, 620);
-      ctx.rect(620, 0, 1000, 600);
-      ctx.rect(0, 420, 1000, 1000);
-      ctx.fill();
-      ctx.stroke();
+  ctx.rect(0, 0, 1000, gridBorderStartY);
+  ctx.rect(0,0, gridBorderStartX, 600);
+  ctx.rect(gridBorderEndX, 0, 1000, 600);
+  ctx.rect(0, gridBorderEndY, 1000, 1000);
+  ctx.fill();
+  ctx.stroke();
 
-      drawEasy();
-      break;
-    case 7: // Medium
-      ctx.beginPath();
-      ctx.fillStyle = "black";
-      ctx.strokeStyle = "black";
+  if(size == 5){drawEasy();}
+  if(size == 7){drawMedium();}
+  if(size == 10){drawHard();}
 
-      ctx.rect(0, 0, 1000, 150);
-      ctx.rect(0, 0, 350, 650);
-      ctx.rect(650, 0, 1000, 600);
-      ctx.rect(0, 450, 1000, 1000);
-      ctx.fill();
-      ctx.stroke();
-
-      drawMedium();
-      break;
-    case 10: // Hard
-      ctx.beginPath();
-      ctx.fillStyle = "black";
-      ctx.strokeStyle = "black";
-
-      ctx.rect(0, 0, 1000, 105);
-      ctx.rect(0, 0, 305, 650);
-      ctx.rect(695, 0, 1000, 600);
-      ctx.rect(0, 495, 1000, 1000);
-      ctx.fill();
-      ctx.stroke();
-
-      drawHard();
-      break;
-    default:
-  }
   asteroids.forEach((asteroid) => {
-    asteroid.draw();
     asteroid.move();
+    asteroid.check();
+    asteroid.draw();
   });
 }
 
@@ -609,26 +315,22 @@ function generateAsteroids() {
   let x, y;
   switch (edge) {
     case 0: // Top edge
-        x = Math.random() * canvas.width;
-        y = 0;
-        direction = "down";
-        break;
+      x = Math.random() * canvas.width;
+      y = 0;
+      break;
     case 1: // Right edge
-        x = canvas.width;
-        y = Math.random() * canvas.height;
-        direction = "left";
-        break;
+      x = canvas.width;
+      y = Math.random() * canvas.height;
+      break;
     case 2: // Bottom edge
-        x = Math.random() * canvas.width;
-        y = canvas.height;
-        direction = "up";
-        break;
+      x = Math.random() * canvas.width;
+      y = canvas.height;
+      break;
     case 3: // Left edge
-        x = 0;
-        y = Math.random() * canvas.height;
-        direction = "right";
-        break;
-}
+      x = 0;
+      y = Math.random() * canvas.height;
+      break;
+  }
 
   // Calculate the angle between (x, y) and (500, 300)
   let angle = Math.atan2(300 - y, 500 - x);
@@ -643,12 +345,6 @@ function generateAsteroids() {
   );
   drawAsteroids();
 }
-
-function clickAsteroid() {}
-
-let speed = 0;
-const asteroidImage1 = new Image();
-const asteroidImage2 = new Image();
 
 function preLoad() {
   asteroidImage1.src = "/images/asteroid1.png";
@@ -675,6 +371,11 @@ $(() => {
 
       setInterval(generateAsteroids, 7000); // Generate asteroids every 7 seconds
 
+      gridBorderStartX = 380;
+      gridBorderEndX = 620;
+      gridBorderStartY = 180;
+      gridBorderEndY = 420;
+
       // randomly select a puzzle
       randomIndex = Math.floor(Math.random() * easyGrids.length);
       selectedGrid = easyGrids[randomIndex];
@@ -690,10 +391,7 @@ $(() => {
       startGridY = 270;
       endGridY = 420;
 
-      currentGrid = [
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0,
-      ];
+      currentGrid = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
       console.log("Easy ", randomIndex + 1);
       break;
     case "medium":
@@ -703,6 +401,11 @@ $(() => {
 
       // every 3 seconds make a new asteroid
       setInterval(generateAsteroids, 5000); // Generate asteroids every 3 seconds
+      
+      gridBorderStartX = 350;
+      gridBorderEndX = 650;
+      gridBorderStartY = 150;
+      gridBorderEndY = 450;
 
       randomIndex = Math.floor(Math.random() * mediumGrids.length);
       selectedGrid = mediumGrids[randomIndex];
@@ -717,11 +420,7 @@ $(() => {
       startGridY = 240;
       endGridY = 450;
 
-      currentGrid = [
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0,
-      ];
+      currentGrid = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
       console.log("Medium ", randomIndex + 1);
       break;
     case "hard":
@@ -732,6 +431,11 @@ $(() => {
       // every 2 seconds make a new asteroid  -will change for difficulty
       setInterval(generateAsteroids, 3000); // Generate asteroids every 2 seconds
 
+      gridBorderStartX = 305;
+      gridBorderEndX = 695;
+      gridBorderStartY = 105;
+      gridBorderEndY = 495
+
       randomIndex = Math.floor(Math.random() * hardGrids.length);
       selectedGrid = hardGrids[randomIndex];
       inner = selectedGrid.inner;
@@ -739,6 +443,7 @@ $(() => {
 
       grid = new Grid(inner, clue);
       grid.drawClues();
+    
       startGridX = 395;
       endGridX = 695;
       startGridY = 195;
@@ -915,8 +620,8 @@ function loseLife() {
   lives--; // Decrease the lives count
 
   // Update the menu bar <h2> to display the new lives count
-  const lives = document.getElementById("lives");
-  menuBar.innerText = "Lives: " + lives;
+  livesText = document.getElementById("lives");
+  livesText.innerText = "Lives: " + lives;
 
   // If lives reach 0, change the screen to red and return home after 5 seconds
   if (lives === 0) {
