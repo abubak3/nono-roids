@@ -14,6 +14,9 @@ let lives;
 let currentGrid;
 let grid, size;
 let asteroidSize;
+let count = 4;
+
+let asteroidInterval;
 
 // mouse positions
 let mouseX, mouseY;
@@ -23,7 +26,7 @@ let startGridX, endGridX, startGridY, endGridY;
 let gridBorderStartX,gridBorderEndX, gridBorderStartY, griBorderEndY;
 
 let asteroids = [];
-let speed = 0;
+let speed;
 
 const asteroidImage1 = new Image();
 const asteroidImage2 = new Image();
@@ -31,23 +34,21 @@ const explosion = new Image();
 
 // HARD CODED GRIDS
 // correct solution
-let innerEasy1 = [
-  2, 1, 1, 1, 2, 2, 2, 2, 2, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 2, 2, 1, 1, 1, 1,
-];
+let innerEasy1 = [2, 1, 1, 1, 2, 2, 2, 2, 2, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 2, 2, 1, 1, 1, 1];
 let clueEasy1 = {
-  rows: [[0, 0, 3],[0, 0, 1],[0, 1, 2],[0, 1, 2],[0, 0, 4],],
-  cols: [[0, 0, 1],[1, 1, 1],[0, 1, 2],[0, 1, 3],[0, 2, 1],],
+  rows: [[0, 0, 3],[0, 0, 1],[0, 1, 2],[0, 1, 2],[0, 0, 4]],
+  cols: [[0, 0, 1],[1, 1, 1],[0, 1, 2],[0, 1, 3],[0, 2, 1]],
 };
 
 // correct solution
-let innerEasy2 = [1, 1, 2, 1, 2, 1, 1, 1, 2, 2, 2, 2, 1, 2, 1, 2, 1, 1, 1, 1, 2, 2, 1, 1, 1,];
+let innerEasy2 = [1, 1, 2, 1, 2, 1, 1, 1, 2, 2, 2, 2, 1, 2, 1, 2, 1, 1, 1, 1, 2, 2, 1, 1, 1];
 let clueEasy2 = {
   rows: [[0, 2, 1],[0, 0, 3],[0, 1, 1],[0, 0, 4],[0, 0, 3]],
-  cols: [[0, 0, 2],[0, 2, 1],[0, 0, 4],[0, 1, 2],[0, 0, 3],],
+  cols: [[0, 0, 2],[0, 2, 1],[0, 0, 4],[0, 1, 2],[0, 0, 3]],
 };
 
 // correct solution
-let innerEasy3 = [2, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 2, 1, 2, 2, 2, 2, 1, 2, 1, 1, 1, 1, 2, 2,];
+let innerEasy3 = [2, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 2, 1, 2, 2, 2, 2, 1, 2, 1, 1, 1, 1, 2, 2];
 let clueEasy3 = {
   rows: [[0, 1, 1],[0, 3, 1],[0, 1, 1],[0, 1, 1],[0, 0, 3]],
   cols: [[0, 2, 1],[0, 2, 1],[0, 0, 4],[0, 0, 1],[0, 1, 1]],
@@ -76,7 +77,7 @@ const easyGrids = [
 ];
 
 // correct solution
-let innerMedium1 = [1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 2, 2, 2, 2, 1, 1, 2, 1, 1, 1,1, 2, 2, 1, 2, 1, 1, 2, 1, 2, 1, 2, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1,];
+let innerMedium1 = [1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 2, 2, 2, 2, 1, 1, 2, 1, 1, 1,1, 2, 2, 1, 2, 1, 1, 2, 1, 2, 1, 2, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1];
 let clueMedium1 = {
   rows: [[0, 2, 4],[0, 2, 2],[0, 2, 1],[0, 1, 4],[1, 2, 1],[1, 1, 2],[0, 2, 4]],
   cols: [[1, 2, 1],[0, 3, 3],[0, 1, 1],[0, 1, 4],[2, 2, 1],[2, 1, 2],[1, 1, 3]],
@@ -133,25 +134,21 @@ let clueHard2 = {
 };
 
 // correct solution
-let innerHard3 = [
-  2, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 2, 1, 1, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1, 2, 2, 1, 2, 2, 2, 2, 2, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 1, 1, 2];
+let innerHard3 = [2, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 2, 1, 1, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1, 2, 2, 1, 2, 2, 2, 2, 2, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 1, 1, 2];
 let clueHard3 = {
   rows: [[0, 0, 2],[0, 4, 1],[0, 1, 2],[0, 3, 3],[0, 1, 3],[0, 1, 4],[0, 2, 5],[1, 1, 1],[3, 1, 3],[0, 3, 2]],
-  cols: [[1, 4, 1],[1, 1, 2],[0, 1, 2],[0, 1, 2],[0, 0, 1],[2, 1, 1],[0, 2, 2],[2, 4, 2], [1, 4, 2],[0, 1, 6]],
+  cols: [[1, 4, 1],[1, 1, 2],[0, 1, 2],[0, 1, 2],[0, 0, 1],[2, 1, 1],[0, 2, 2],[2, 4, 2],[1, 4, 2],[0, 1, 6]],
 };
 
 // correct solution
-let innerHard4 = [
-  2, 2, 2, 1, 1, 1, 1, 2, 1, 1, 1, 2, 2, 2, 2, 1, 1, 2, 1, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 1, 2, 1, 1, 1, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1, 2, 1, 1, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 2, 1, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2];
+let innerHard4 = [2, 2, 2, 1, 1, 1, 1, 2, 1, 1, 1, 2, 2, 2, 2, 1, 1, 2, 1, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 1, 2, 1, 1, 1, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1, 2, 1, 1, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 2, 1, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2];
 let clueHard4 = {
-  rows: [
-    [0, 4, 2],[1, 2, 2],[0, 2, 4],[0, 2, 3], [0, 3, 1], [0, 1, 2],[0, 0, 2],[0, 0, 4],[0, 6, 1],[0, 0, 2]],
+  rows: [[0, 4, 2],[1, 2, 2],[0, 2, 4],[0, 2, 3],[0, 3, 1],[0, 1, 2],[0, 0, 2],[0, 0, 4],[0, 6, 1],[0, 0, 2]],
   cols: [[2, 1, 2],[1, 1, 2],[0, 2, 1],[1, 1, 1],[1, 2, 1],[0, 2, 3],[4, 1, 1],[0, 4, 1],[0, 4, 2],[0, 0, 3]],
 };
 
 // correct solution
-let innerHard5 = [
-  2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2];
+let innerHard5 = [2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2];
 let clueHard5 = {
   rows: [[0, 0, 2],[0, 1, 7],[0, 1, 2],[0, 1, 5],[0, 1, 7],[0, 5, 2],[0, 0, 4],[0, 0, 8],[0, 1, 3],[0, 0, 1]],
   cols: [[0, 6, 2],[0, 0, 2],[0, 1, 3],[0, 2, 4],[1, 2, 1],[1, 2, 1],[1, 2, 2],[1, 2, 2],[0, 5, 2],[0, 5, 1]],
@@ -177,7 +174,8 @@ class Grid {
     if (JSON.stringify(currentGrid) == this.stringSolution) {
       console.log("Nongram is correct! Win Game");
 
-      setInterval(generateAsteroids, 20000); // Stop Generating
+      asteroids = [];
+      clearInterval(asteroidInterval);
 
       // fill screen to be green
       ctx.beginPath();
@@ -300,6 +298,11 @@ class Asteroid {
   click(){
     if (mouseX >= this.x && mouseX <= this.x + asteroidSize && mouseY >= this.y && mouseY <= this.y + asteroidSize) {
       // Asteroid was clicked
+      document.body.classList.add("flash");
+      setTimeout(function() {
+          document.body.classList.remove("flash");
+      }, 500); // 500 milliseconds = 0.5 seconds
+
       // Remove the asteroid from the asteroids array
       const index = asteroids.indexOf(this);
       if (index !== -1) {
@@ -393,7 +396,6 @@ function drawCountdown(count) {
   ctx.fillText(count, canvas.width / 2, canvas.height / 2);
 }
 
-let count = 4;
 function countdown() {
   count--;
   drawCountdown(count);
@@ -428,7 +430,7 @@ $(() => {
       asteroidSize = 50; // Set the initial size of each asteroid
       lives = 5;
 
-      setInterval(generateAsteroids, 7000); // Generate asteroids every 7 seconds
+      asteroidInterval = setInterval(generateAsteroids, 5000); // Generate asteroids every 7 seconds
 
       gridBorderStartX = 380;
       gridBorderEndX = 620;
@@ -461,7 +463,7 @@ $(() => {
       lives = 4;
       
       // every 3 seconds make a new asteroid
-      setInterval(generateAsteroids, 5000); // Generate asteroids every 3 seconds
+      asteroidInterval = setInterval(generateAsteroids, 4000); // Generate asteroids every 3 seconds
       
       gridBorderStartX = 350;
       gridBorderEndX = 650;
@@ -492,7 +494,7 @@ $(() => {
       lives = 3;
 
       // every 2 seconds make a new asteroid  -will change for difficulty
-      setInterval(generateAsteroids, 3000); // Generate asteroids every 2 seconds
+      asteroidInterval = setInterval(generateAsteroids, 3000); // Generate asteroids every 2 seconds
 
       gridBorderStartX = 305;
       gridBorderEndX = 695;
@@ -660,8 +662,8 @@ $("#gameCanvas").mousedown((e) => {
         drawSquare(selectedRow, selectedCol, "purple");
       }
     }
-    console.log(currentGrid);
-    console.log(grid.solution);
+    // console.log(currentGrid);
+    // console.log(grid.solution);
     grid.checkGrid();
   }
   
@@ -696,21 +698,23 @@ function loseLife() {
 
   // If lives reach 0, change the screen to red and return home after 5 seconds
   if (lives === 0) {
-    setInterval(generateAsteroids, 20000); // Stop Generating
+    // stop generating - clear the asteroids
+    asteroids = [];
+    clearInterval(asteroidInterval);
 
-      // fill screen to be green
-      ctx.beginPath();
-      ctx.rect(0, 0, 1000, 600);
-      ctx.fillStyle = "red";
-      ctx.fill();
+    // fill screen to be red
+    ctx.beginPath();
+    ctx.rect(0, 0, 1000, 600);
+    ctx.fillStyle = "red";
+    ctx.fill();
 
-      // display you win
-      ctx.font = "80px Arial";
-      ctx.fillStyle = "white";
-      ctx.textAlign = "center";
-      ctx.fillText("You Lose", canvas.width / 2, canvas.height / 2 - 50);
+    // display you win
+    ctx.font = "80px Arial";
+    ctx.fillStyle = "white";
+    ctx.textAlign = "center";
+    ctx.fillText("You Lose", canvas.width / 2, canvas.height / 2 - 50);
 
-      // Start countdown from 3
-      setTimeout(countdown, 2000); // Call countdown after 2 second
+    // Start countdown from 3
+    setTimeout(countdown, 2000); // Call countdown after 2 second
   }
 }

@@ -1,0 +1,33 @@
+body {
+  background-image: url('space.jpg'); /* Your space image */
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 100vh;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+body.flash {
+  animation: flashAnimation 0.5s;
+  background-image: none !important; /* Disable background image during flash */
+}
+
+@keyframes flashAnimation {
+  0% {
+      background-color: red;
+  }
+  50% {
+      background-color: transparent;
+  }
+  100% {
+      background-color: red;
+  }
+}
+
+/* Apply custom font style to menu bar text */
+.top-menu-bar {
+  font-family: 'Orbitron', sans-serif;
+  color: white; /* Set text color to white */
+}
