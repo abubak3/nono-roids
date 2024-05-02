@@ -16,7 +16,7 @@ let grid, size;
 let asteroidSize;
 
 // mouse positions
-let x, y;
+let mouseX, mouseY;
 let startGridX, endGridX, startGridY, endGridY;
 
 // gborders
@@ -290,6 +290,18 @@ class Asteroid {
       return;
     }
     this.draw();
+  }
+
+  click(){
+    if (mouseX >= this.x && mouseX <= this.x + asteroidSize && mouseY >= this.y && mouseY <= this.y + asteroidSize) {
+      // Asteroid was clicked
+      // Remove the asteroid from the asteroids array
+      const index = asteroids.indexOf(this);
+      if (index !== -1) {
+        asteroids.splice(index, 1);
+      }
+      console.log("Asteroid clicked at (" + this.x + ", " + this.y + ")");
+    }
   }
 }
 
@@ -590,9 +602,9 @@ canvas.oncontextmenu = function (e) {
 
 $("#gameCanvas").mousedown((e) => {
   getMousePos(e);
-  if (x > startGridX && x < endGridX && y > startGridY && y < endGridY) {
-    let selectedCol = Math.floor((x - startGridX) / 30);
-    let selectedRow = Math.floor((y - startGridY) / 30);
+  if (mouseX > startGridX && mouseX < endGridX && mouseY > startGridY && mouseY < endGridY) { // over the grid
+    let selectedCol = Math.floor((mouseX - startGridX) / 30);
+    let selectedRow = Math.floor((mouseY - startGridY) / 30);
     if (e.which == 1) {
       // left click - set block to white
       if (currentGrid[(selectedCol % size) + selectedRow * size] == 1) {
@@ -616,6 +628,11 @@ $("#gameCanvas").mousedown((e) => {
     console.log(grid.solution);
     grid.checkGrid();
   }
+  
+  // NOT OVER THE GRID - check if click asteroid
+  asteroids.forEach((asteroid) => {
+    asteroid.click();
+  });
 });
 
 // to fill in a square on the grid
@@ -630,8 +647,8 @@ function drawSquare(row, col, color) {
 // to get position of the mouse on the canvas
 function getMousePos(evt) {
   var rect = canvas.getBoundingClientRect();
-  x = evt.clientX - rect.left;
-  y = evt.clientY - rect.top;
+  mouseX = evt.clientX - rect.left;
+  mouseY = evt.clientY - rect.top;
 }
 
 function loseLife() {
