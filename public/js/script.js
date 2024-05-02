@@ -27,6 +27,7 @@ let speed = 0;
 
 const asteroidImage1 = new Image();
 const asteroidImage2 = new Image();
+const explosion = new Image();
 
 // HARD CODED GRIDS
 // correct solution
@@ -174,7 +175,9 @@ class Grid {
   checkGrid() {
     // need to fix based on asteroid
     if (JSON.stringify(currentGrid) == this.stringSolution) {
-      console.log("nongram is correct!");
+      console.log("Nongram is correct! Win Game");
+
+      setInterval(generateAsteroids, 20000); // Stop Generating
 
       // fill screen to be green
       ctx.beginPath();
@@ -186,7 +189,7 @@ class Grid {
 
       // Wait for 5 seconds before redirecting to index.html
       setTimeout(function () {
-        window.location.href = "index.html"; // Replace "index.html" with your actual index file path
+        window.location.href = "index.html";
       }, 5000);
     }
   }
@@ -300,6 +303,9 @@ class Asteroid {
       if (index !== -1) {
         asteroids.splice(index, 1);
       }
+      
+      // draw an explosion over where asteroid was
+      ctx.drawImage(explosion, this.x, this.y, this.size, this.size);
       console.log("Asteroid clicked at (" + this.x + ", " + this.y + ")");
     }
   }
@@ -370,6 +376,7 @@ function generateAsteroids() {
 function preLoad() {
   asteroidImage1.src = "/images/asteroid1.png";
   asteroidImage2.src = "/images/asteroid2.png";
+  explosion.src = "/images/explosion.png";
 }
 
 $(() => {
@@ -383,6 +390,7 @@ $(() => {
   ctx.rect(0, 0, 1000, 600);
   ctx.fillStyle = "black";
   ctx.fill();
+  ctx.stroke();
 
   switch (difficulty) {
     case "easy":
@@ -660,12 +668,13 @@ function loseLife() {
 
   // If lives reach 0, change the screen to red and return home after 5 seconds
   if (lives === 0) {
+    asteroids = []; // clear the asteroids from array so they dont keep drawing and moving
+    setInterval(generateAsteroids, 10000); // Stop Generating
+
     ctx.beginPath();
     ctx.rect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = "red";
     ctx.fill();
-
-    asteroids = []; // clear the asteroids from array so they dont keep drawing and moving
 
     setTimeout(() => {
       window.location.href = "index.html"; // Redirect to index.html after 5 seconds
