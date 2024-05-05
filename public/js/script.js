@@ -10,6 +10,7 @@ const ctx = canvas.getContext("2d");
 /**
  * Globals!
  */
+let gameOver = false; // turn to true when game is over and stops game animation
 let lives; // player lives: 5 for easy, 4 for medium, 3 for hard
 let currentGrid; // current player grid
 let grid, size; // grid object and size of grid
@@ -280,105 +281,6 @@ class Asteroid {
     }
 }
 
-// draw all the asteroids
-function drawAsteroids() {
-    // clear the old asteroids
-    ctx.beginPath();
-    ctx.fillStyle = "black";
-    ctx.strokeStyle = "black";
-
-    ctx.rect(0, 0, 1000, gridBorderStartY);
-    ctx.rect(0, 0, gridBorderStartX, 600);
-    ctx.rect(gridBorderEndX, 0, 1000, 600);
-    ctx.rect(0, gridBorderEndY, 1000, 1000);
-    ctx.fill();
-    ctx.stroke();
-
-    // redraw the borders of the grid
-    if (size == 5) drawEasy();
-    if (size == 7) drawMedium();
-    if (size == 10) drawHard();
-
-    // for each asteroid, we move and then check and then maybe draw
-    asteroids.forEach((asteroid) => {
-        asteroid.move();
-        asteroid.check();
-        asteroid.draw();
-    });
-}
-
-// to generate a new asteroid
-function generateAsteroids() {
-    const edge = Math.floor(Math.random() * 4); // Randomly select one of the four edges
-    let x, y, direction;
-    switch (edge) {
-        case 0: // Top edge
-            x = Math.floor(Math.random() * canvas.width);
-            y = 0;
-            direction = "down";
-            break;
-        case 1: // Right edge
-            x = canvas.width;
-            y = Math.floor(Math.random() * canvas.height);
-            direction = "left";
-            break;
-        case 2: // Bottom edge
-            x = Math.floor(Math.random() * canvas.width);
-            y = canvas.height;
-            direction = "up";
-            break;
-        case 3: // Left edge
-            x = 0;
-            y = Math.floor(Math.random() * canvas.height);
-            direction = "right";
-            break;
-    }
-
-    // Calculate the angle between (x, y) and (500, 300)
-    let angle = Math.atan2(300 - y, 500 - x);
-
-    const image = Math.random() > 0.5 ? asteroidImage1 : asteroidImage2; // Randomly select an image
-    const asteroid = new Asteroid(x, y, direction, angle, image); // create asteroid object
-
-    asteroids.push(asteroid); // push to array
-    // console.log("asteroid pushed at " + x + " , " + y + " with direction " + direction + " angle: " + angle);
-    // drawAsteroids();
-}
-
-// to preload the images
-function preLoad() {
-    asteroidImage1.src = "/images/asteroid1.png";
-    asteroidImage2.src = "/images/asteroid2.png";
-    explosion.src = "/images/explosion.png";
-}
-
-// to draw the countdown
-function drawCountdown(count) {
-    ctx.rect(0, 0, 1000, 600);
-    ctx.fillStyle = "purple";
-    ctx.fill();
-    ctx.stroke();
-
-    ctx.font = "80px Arial";
-    ctx.fillStyle = "white";
-    ctx.textAlign = "center";
-    ctx.fillText(count, canvas.width / 2, canvas.height / 2);
-}
-
-// to do the countdown to home screen
-function countdown() {
-    count--;
-    drawCountdown(count);
-    if (count > 1) {
-        setTimeout(countdown, 1000); // Call countdown again after 1 second
-    } else {
-        // Redirect to index.html after countdown completes
-        setTimeout(function () {
-            window.location.href = "index.html";
-        }, 1000);
-    }
-}
-
 // on window load
 $(() => {
     // Extract difficulty level from URL
@@ -395,7 +297,7 @@ $(() => {
 
     switch (difficulty) {
         case "easy":
-            speed = 3; // set speed of asteroids
+            speed = 1; // set speed of asteroids
             drawEasy(); // Call the appropriate drawing function based on difficulty level
             size = 5; // set size of grid
             asteroidSize = 50; // Set the initial size of each asteroid
@@ -432,7 +334,7 @@ $(() => {
         case "medium":
             drawMedium();
             size = 7;
-            speed = 5;
+            speed = 2;
             asteroidSize = 40;
             lives = 4;
 
@@ -463,7 +365,7 @@ $(() => {
         case "hard":
             drawHard();
             size = 10;
-            speed = 10;
+            speed = 2.5;
             asteroidSize = 30;
             lives = 3;
 
@@ -497,42 +399,109 @@ $(() => {
     animate();
 });
 
-
 function animate() {
-    // clear the screen for each frame
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    // clear the old asteroids
-    ctx.beginPath();
-    ctx.fillStyle = "black";
-    ctx.strokeStyle = "black";
+    if (!gameOver) {
+        // clear the screen for each frame
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // clear the old asteroids
+        ctx.beginPath();
+        ctx.fillStyle = "black";
+        ctx.strokeStyle = "black";
+        ctx.rect(0, 0, 1000, 600);
+        ctx.fill();
+        ctx.stroke();
+
+        // redraw the borders of the grid
+        if (size == 5) {
+            drawEasy();
+        } else if (size == 7) {
+            drawMedium();
+        } else if (size == 10) {
+            drawHard();
+        }
+        grid.drawClues();
+        drawSquares();
+
+        // for each asteroid, we move and then check and then maybe draw
+        asteroids.forEach((asteroid) => {
+            asteroid.move();
+            asteroid.check();
+            asteroid.draw();
+        });
+        window.requestAnimationFrame(animate);
+    }
+};
+
+// to generate a new asteroid
+function generateAsteroids() {
+    const edge = Math.floor(Math.random() * 4); // Randomly select one of the four edges
+    let x, y, direction;
+    switch (edge) {
+        case 0: // Top edge
+            x = Math.floor(Math.random() * canvas.width);
+            y = 0;
+            direction = "down";
+            break;
+        case 1: // Right edge
+            x = canvas.width;
+            y = Math.floor(Math.random() * canvas.height);
+            direction = "left";
+            break;
+        case 2: // Bottom edge
+            x = Math.floor(Math.random() * canvas.width);
+            y = canvas.height;
+            direction = "up";
+            break;
+        case 3: // Left edge
+            x = 0;
+            y = Math.floor(Math.random() * canvas.height);
+            direction = "right";
+            break;
+    }
+
+    // Calculate the angle between (x, y) and (500, 300)
+    let angle = Math.atan2(300 - y, 500 - x);
+
+    const image = Math.random() > 0.5 ? asteroidImage1 : asteroidImage2; // Randomly select an image
+    const asteroid = new Asteroid(x, y, direction, angle, image); // create asteroid object
+
+    asteroids.push(asteroid); // push to array
+}
+
+// to preload the images
+function preLoad() {
+    asteroidImage1.src = "/images/asteroid1.png";
+    asteroidImage2.src = "/images/asteroid2.png";
+    explosion.src = "/images/explosion.png";
+}
+
+// to draw the countdown
+function drawCountdown(count) {
     ctx.rect(0, 0, 1000, 600);
+    ctx.fillStyle = "purple";
     ctx.fill();
     ctx.stroke();
 
+    ctx.font = "80px Arial";
+    ctx.fillStyle = "white";
+    ctx.textAlign = "center";
+    ctx.fillText("Returning to main menu in:", canvas.width / 2, canvas.height / 2 - 80);
+    ctx.fillText(count, canvas.width / 2, canvas.height / 2);
+}
 
-    // redraw the borders of the grid
-    if (size == 5) {
-        drawEasy();
-    } else if (size == 7) {
-        drawMedium();
-    } else if (size == 10) {
-        drawHard();
+// to do the countdown to home screen
+function countdown() {
+    count--;
+    drawCountdown(count);
+    if (count > 1) {
+        setTimeout(countdown, 1000); // Call countdown again after 1 second
+    } else {
+        // Redirect to index.html after countdown completes
+        setTimeout(function () {
+            window.location.href = "index.html";
+        }, 1000);
     }
-    grid.drawClues();
-    drawSquares();
-
-    // for each asteroid, we move and then check and then maybe draw
-    asteroids.forEach((asteroid) => {
-        asteroid.move();
-        asteroid.check();
-        asteroid.draw();
-    });
-
-    window.requestAnimationFrame(animate);
-};
-
-
-
+}
 
 // for easy we need to start at (380,180)
 function drawEasy() {
@@ -574,10 +543,7 @@ function drawMedium() {
     ctx.moveTo(350, 150);
 
     // outside lines
-    ctx.lineTo(650, 150); // x: 350 + 300, y: 150
-    ctx.lineTo(650, 450); // x: 350 + 300, y: 150 + 300
-    ctx.lineTo(350, 450); // x: 350, y: 150 + 300
-    ctx.lineTo(350, 150); // x: 350, y: 150
+    ctx.rect(350, 150, 300, 300);
 
     ctx.moveTo(350, 240); // x: 350, y: 150 + 90
     ctx.lineTo(650, 240); // x: 350 + 300, y: 150 + 90
@@ -608,10 +574,7 @@ function drawHard() {
     ctx.moveTo(305, 105);
 
     // outside lines
-    ctx.lineTo(695, 105); // x: 305 + 390, y: 105
-    ctx.lineTo(695, 495); // x: 305 + 390, y: 105 + 390
-    ctx.lineTo(305, 495); // x: 305, y: 105 + 390
-    ctx.lineTo(305, 105); // x: 305, y: 105
+    ctx.rect(305, 105, 390, 390);
 
     ctx.moveTo(305, 195); // x: 305, y: 105 + 90
     ctx.lineTo(695, 195); // x: 305 + 390, y: 105 + 90
@@ -647,23 +610,17 @@ $("#gameCanvas").mousedown((e) => {
             // left click - set block to white
             if (currentGrid[(selectedCol % size) + selectedRow * size] == 1) { // if its already white set to black
                 currentGrid[(selectedCol % size) + selectedRow * size] = 0;
-                // drawSquare(selectedRow, selectedCol, "black");
             } else {
                 currentGrid[(selectedCol % size) + selectedRow * size] = 1;
-                // drawSquare(selectedRow, selectedCol, "white");
             }
         } else if (e.which == 3) {
             // right click - set block to purple
             if (currentGrid[(selectedCol % size) + selectedRow * size] == 2) { // if its already purple set to black
                 currentGrid[(selectedCol % size) + selectedRow * size] = 0;
-                // drawSquare(selectedRow, selectedCol, "black");
             } else {
                 currentGrid[(selectedCol % size) + selectedRow * size] = 2;
-                // drawSquare(selectedRow, selectedCol, "purple");
             }
         }
-        // console.log(currentGrid);
-        // console.log(grid.solution);
         grid.checkGrid(); // check if solved
     }
 
@@ -719,6 +676,7 @@ function loseLife() {
 
     // If lives reach 0, change the screen to red and return home after 5 seconds
     if (lives === 0) {
+        gameOver = true;
         // stop generating - clear the asteroids
         asteroids = [];
         clearInterval(asteroidInterval);
