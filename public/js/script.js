@@ -395,7 +395,7 @@ $(() => {
 
     switch (difficulty) {
         case "easy":
-            speed = 3; // set speed of asteroids
+            speed = 2; // set speed of asteroids
             drawEasy(); // Call the appropriate drawing function based on difficulty level
             size = 5; // set size of grid
             asteroidSize = 50; // Set the initial size of each asteroid
@@ -432,7 +432,7 @@ $(() => {
         case "medium":
             drawMedium();
             size = 7;
-            speed = 5;
+            speed = 2;
             asteroidSize = 40;
             lives = 4;
 
@@ -463,11 +463,11 @@ $(() => {
         case "hard":
             drawHard();
             size = 10;
-            speed = 10;
+            speed = 3;
             asteroidSize = 30;
             lives = 3;
 
-            asteroidInterval = setInterval(generateAsteroids, 2000); // Generate asteroids every 2 seconds
+            asteroidInterval = setInterval(generateAsteroids, 3000); // Generate asteroids every 2 seconds
 
             gridBorderStartX = 305;
             gridBorderEndX = 695;
