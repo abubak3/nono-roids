@@ -161,6 +161,7 @@ class Grid {
     checkGrid() {
         // need to fix based on asteroid
         if (JSON.stringify(currentGrid) == this.stringSolution) {
+            gameOver = true;
             asteroids = []; // clear asteroid array
             clearInterval(asteroidInterval); // set interval to be 0
 
