@@ -369,7 +369,7 @@ $(() => {
             asteroidSize = 30;
             lives = 3;
 
-            asteroidInterval = setInterval(generateAsteroids, 2000); // Generate asteroids every 2 seconds
+            asteroidInterval = setInterval(generateAsteroids, 3000); // Generate asteroids every 2 seconds
 
             gridBorderStartX = 305;
             gridBorderEndX = 695;
